@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "751275427395",
+    "project_id": "ecomap-d1d23",
+    "storage_bucket": "ecomap-d1d23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751275427395:android:0be59580aa59062aaf76f6",
+        "android_client_info": {
+          "package_name": "com.example.ecomap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751275427395-3h8ak60fa7t0hpi3likbrpbtemqjhtvh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpgJtVF4gNBLJCG-mxbZoSN-jeI0zri_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751275427395-3h8ak60fa7t0hpi3likbrpbtemqjhtvh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
