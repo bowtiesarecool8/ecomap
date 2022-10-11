@@ -19,7 +19,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final userProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('היי!'),
+        title: const Text('ברוכים הבאים!'),
       ),
       body: Center(
         child: ElevatedButton.icon(

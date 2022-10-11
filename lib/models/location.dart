@@ -1,19 +1,19 @@
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+
+import 'package:latlong2/latlong.dart';
 
 class Location {
   final String id;
-  final double latitude;
-  final double longtitude;
-  final String adress;
+  final LatLng latLng;
+  final String address;
   final String type;
   final Color color;
   final String description;
 
   Location({
     required this.id,
-    required this.latitude,
-    required this.longtitude,
-    required this.adress,
+    required this.latLng,
+    required this.address,
     required this.type,
     required this.color,
     required this.description,

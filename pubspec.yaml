@@ -44,6 +44,7 @@ dependencies:
   flutter_map: ^3.0.0
   latlong2: ^0.8.1
   cloud_firestore: ^3.5.1
+  geopoint: ^1.0.0
 
 dev_dependencies:
   flutter_test:

@@ -8,6 +8,7 @@ import './screens/auth_screen.dart';
 import './screens/home_screen.dart';
 
 import './providers/auth_provider.dart';
+import './providers/locations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AuthProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => LocationsProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -37,7 +41,7 @@ class MyApp extends StatelessWidget {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, userSnapshot) {
               if (userSnapshot.hasData) {
-                return HomeScreen();
+                return const HomeScreen();
               } else {
                 return const AuthScreen();
               }
