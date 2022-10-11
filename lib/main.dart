@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import './screens/auth_screen.dart';
 import './screens/home_screen.dart';
 
-import './providers/user_provider.dart';
+import './providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => UserProvider(),
+          create: (context) => AuthProvider(),
         ),
       ],
       child: MaterialApp(
@@ -31,7 +31,19 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const AuthScreen(),
+        home: Directionality(
+          textDirection: TextDirection.rtl,
+          child: StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, userSnapshot) {
+              if (userSnapshot.hasData) {
+                return HomeScreen();
+              } else {
+                return const AuthScreen();
+              }
+            },
+          ),
+        ),
         debugShowCheckedModeBanner: false,
       ),
     );

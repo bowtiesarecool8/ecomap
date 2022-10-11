@@ -1,13 +1,10 @@
-import 'package:ecomap/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../providers/user_provider.dart';
+import '../providers/auth_provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -19,25 +16,20 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('hello'),
+        title: const Text('היי!'),
       ),
       body: Center(
         child: ElevatedButton.icon(
           onPressed: () async {
             final result = await userProvider.login();
-            if (result != null && result != '') {
+            if (result.toString() != 'null' && result.toString() != '') {
+              // ignore: use_build_context_synchronously
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(result),
-                ),
-              );
-            } else {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => HomeScreen(),
+                  content: Text(result.toString()),
                 ),
               );
             }
