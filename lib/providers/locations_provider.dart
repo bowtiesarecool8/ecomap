@@ -11,10 +11,19 @@ class LocationsProvider extends ChangeNotifier {
   // ignore: prefer_final_fields
   List<Location> _locations = [];
   // ignore: prefer_final_fields
-  Map<String, Color> _typesToColors = {
-    'עיר': Colors.purple,
-    'מיחזור': Colors.green,
-    'בדיקה': Colors.blue,
+  static const Map<String, Color> _typesToColors = {
+    'מרכז מיחזור': Color.fromARGB(255, 23, 129, 26),
+    'ערך מורשת וטבע': Color.fromARGB(255, 96, 5, 112),
+    'קומפוסטר שיתופי': Color.fromARGB(255, 75, 21, 2),
+    'גינה קהילתית': Colors.red,
+    'ספסל מסירה': Color.fromARGB(255, 13, 91, 155),
+    'מקרר חברתי': Colors.cyan,
+    'השאלת כלים': Color.fromARGB(255, 228, 169, 6),
+    'עצי פרי': Color.fromARGB(255, 252, 93, 1),
+    'תיבת קינון': Colors.lightGreen,
+    'גינת כלבים': Color.fromARGB(255, 88, 69, 58),
+    'עסק סביבתי': Color.fromARGB(255, 121, 131, 37),
+    'מוקד קהילתי': Color.fromARGB(255, 196, 67, 110),
   };
 
   Future<void> fetchLocations() async {
@@ -31,9 +40,7 @@ class LocationsProvider extends ChangeNotifier {
                           document['latlng']['longitude']),
                       address: document['address'],
                       type: document['type'],
-                      color: !_typesToColors.keys.contains(document['type'])
-                          ? _typesToColors[document['type']] = Colors.black
-                          : _typesToColors[document['type']]!,
+                      color: _typesToColors[document['type']]!,
                       description: document['description'],
                     ),
                   ),
@@ -51,9 +58,6 @@ class LocationsProvider extends ChangeNotifier {
         'type': type,
         'description': description,
       });
-      if (!_typesToColors.keys.contains(type)) {
-        _typesToColors[type] = Colors.black;
-      }
       _locations.add(
         Location(
           id: doc.id,

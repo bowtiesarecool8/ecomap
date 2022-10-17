@@ -10,7 +10,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../providers/auth_provider.dart';
 
-import '../providers/locations.dart';
+import '../providers/locations_provider.dart';
 
 import '../widgets/add_place.dart';
 
@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   LatLng pos = LatLng(31.92933, 34.79868);
   bool isFirstBuild = true;
   bool isLoading = false;
+  bool isEditing = false;
 
   @override
   Future<void> didChangeDependencies() async {
@@ -86,13 +87,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       options: MapOptions(
                         center: LatLng(31.92933, 34.79868),
                         zoom: 15,
-                        onTap: (tapPosition, point) {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AddPlace(
-                              latLng: point,
-                            ),
-                          );
+                        onTap: (tapPosition, point) async {
+                          if (isEditing) {
+                            await showDialog(
+                              context: context,
+                              builder: (_) => AddPlace(
+                                latLng: point,
+                              ),
+                            );
+                            setState(() {
+                              isEditing = false;
+                            });
+                          }
                         },
                       ),
                       children: [
@@ -110,6 +116,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+      floatingActionButton: CircleAvatar(
+        child: IconButton(
+          icon: Icon(isEditing ? Icons.close : Icons.edit),
+          onPressed: () {
+            setState(() {
+              isEditing = !isEditing;
+            });
+          },
+        ),
+      ),
     );
   }
 }

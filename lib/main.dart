@@ -8,7 +8,7 @@ import './screens/auth_screen.dart';
 import './screens/home_screen.dart';
 
 import './providers/auth_provider.dart';
-import './providers/locations.dart';
+import './providers/locations_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
