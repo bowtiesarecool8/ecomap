@@ -8,11 +8,15 @@ import 'package:flutter_map/flutter_map.dart';
 
 import 'package:latlong2/latlong.dart';
 
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+
 import '../providers/auth_provider.dart';
 
 import '../providers/locations_provider.dart';
 
 import '../widgets/add_place.dart';
+
+import './place_info_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -53,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Marker> locationMarkers = locationsProvider.locations.map(
       (element) {
         return Marker(
+          key: ValueKey(element.id),
           point: element.latLng,
           builder: (context) => Icon(
             Icons.location_pin,
@@ -107,9 +112,57 @@ class _HomeScreenState extends State<HomeScreen> {
                               "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                           userAgentPackageName: 'com.example.app',
                         ),
-                        MarkerLayer(
-                          markers: locationMarkers,
-                        )
+                        MarkerClusterLayerWidget(
+                          options: MarkerClusterLayerOptions(
+                            popupOptions: PopupOptions(
+                              popupSnap: PopupSnap.mapLeft,
+                              popupBuilder: (ctx, p1) {
+                                // Navigator.push(
+                                //   ctx,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => PlaceInfoScreen(
+                                //       placeId: p1.key.toString().substring(
+                                //             3,
+                                //             p1.key.toString().length - 3,
+                                //           ),
+                                //     ),
+                                //   ),
+                                // );
+                                return PlaceInfoScreen(
+                                  placeId: p1.key.toString().substring(
+                                        3,
+                                        p1.key.toString().length - 3,
+                                      ),
+                                );
+                                // SizedBox(
+                                //   height: MediaQuery.of(context).size.height,
+                                //   width: MediaQuery.of(context).size.width / 2,
+                                //   child: Card(
+                                //       color: Colors.white,
+                                //       child: Padding(
+                                //         padding: const EdgeInsets.all(8.0),
+                                //         child: Text(p1.key.toString()),
+                                //       )),
+                                // );
+                              },
+                              popupState: PopupState(),
+                            ),
+                            maxClusterRadius: 120,
+                            size: const Size(40, 40),
+                            fitBoundsOptions: const FitBoundsOptions(
+                              padding: EdgeInsets.all(50),
+                            ),
+                            markers: locationMarkers,
+                            builder: (context, markers) {
+                              return Center(
+                                child: FloatingActionButton(
+                                  onPressed: () {},
+                                  child: const Text(''),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),

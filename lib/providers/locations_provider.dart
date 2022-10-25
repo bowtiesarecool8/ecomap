@@ -78,6 +78,10 @@ class LocationsProvider extends ChangeNotifier {
     }
   }
 
+  Location findLocationById(String id) {
+    return _locations.firstWhere((element) => element.id == id);
+  }
+
   void cleanDataOnExit() {
     _locations = [];
     notifyListeners();
