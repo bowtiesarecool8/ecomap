@@ -15,6 +15,7 @@ import '../providers/auth_provider.dart';
 import '../providers/locations_provider.dart';
 
 import '../widgets/add_place.dart';
+import '../widgets/place_info_popup.dart';
 
 import './place_info_screen.dart';
 
@@ -31,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isFirstBuild = true;
   bool isLoading = false;
   bool isEditing = false;
+
+  PopupController infoController = PopupController();
 
   @override
   Future<void> didChangeDependencies() async {
@@ -115,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         MarkerClusterLayerWidget(
                           options: MarkerClusterLayerOptions(
                             popupOptions: PopupOptions(
+                              popupController: infoController,
                               popupSnap: PopupSnap.mapLeft,
                               popupBuilder: (ctx, p1) {
                                 // Navigator.push(
@@ -128,11 +132,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 //     ),
                                 //   ),
                                 // );
-                                return PlaceInfoScreen(
+                                return PlaceInfoPopup(
                                   placeId: p1.key.toString().substring(
                                         3,
                                         p1.key.toString().length - 3,
                                       ),
+                                  infoController: infoController,
                                 );
                                 // SizedBox(
                                 //   height: MediaQuery.of(context).size.height,

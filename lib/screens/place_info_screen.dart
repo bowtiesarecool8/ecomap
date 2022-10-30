@@ -8,7 +8,10 @@ import '../providers/locations_provider.dart';
 
 class PlaceInfoScreen extends StatelessWidget {
   final String placeId;
-  const PlaceInfoScreen({super.key, required this.placeId});
+  const PlaceInfoScreen({
+    super.key,
+    required this.placeId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +20,6 @@ class PlaceInfoScreen extends StatelessWidget {
             .findLocationById(placeId);
     return Scaffold(
       appBar: AppBar(
-        // actions: [
-        //   IconButton(
-        //     onPressed: () => Navigator.pop(context),
-        //     icon: const Icon(Icons.close),
-        //   ),
-        // ],
         title: Text(location.address),
       ),
     );
