@@ -19,6 +19,7 @@ class AddPlace extends StatefulWidget {
 
 class _AddPlaceState extends State<AddPlace> {
   final _formKey = GlobalKey<FormState>();
+  String name = '';
   String address = '';
   String type = 'מרכז מיחזור';
   String description = '';
@@ -35,6 +36,7 @@ class _AddPlaceState extends State<AddPlace> {
     'גינת כלבים',
     'עסק סביבתי',
     'מוקד קהילתי',
+    'אתר בסיכון',
   ];
 
   void trySubmit() async {
@@ -45,7 +47,7 @@ class _AddPlaceState extends State<AddPlace> {
       setState(() async {
         final response =
             await Provider.of<LocationsProvider>(context, listen: false)
-                .addLocation(widget.latLng, address, type, description);
+                .addLocation(name, widget.latLng, address, type, description);
         if (response == 'done') {
           Navigator.of(context).pop();
         } else {
@@ -72,6 +74,27 @@ class _AddPlaceState extends State<AddPlace> {
             key: _formKey,
             child: Column(
               children: [
+                TextFormField(
+                  key: const ValueKey('name'),
+                  textAlign: TextAlign.right,
+                  textCapitalization: TextCapitalization.none,
+                  autocorrect: false,
+                  enableSuggestions: true,
+                  decoration: const InputDecoration(
+                    hintText: 'שם האתר',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'הכנס שם אתר';
+                    }
+                    return null;
+                  },
+                  onSaved: (newValue) {
+                    if (newValue != null) {
+                      name = newValue.trim();
+                    }
+                  },
+                ),
                 TextFormField(
                   key: const ValueKey('address'),
                   textAlign: TextAlign.right,

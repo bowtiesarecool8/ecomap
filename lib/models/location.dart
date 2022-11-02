@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 class Location {
   final String id;
+  final String name;
   final LatLng latLng;
   final String address;
   final String type;
@@ -12,6 +13,7 @@ class Location {
 
   Location({
     required this.id,
+    required this.name,
     required this.latLng,
     required this.address,
     required this.type,

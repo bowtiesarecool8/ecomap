@@ -24,6 +24,7 @@ class LocationsProvider extends ChangeNotifier {
     'גינת כלבים': Color.fromARGB(255, 88, 69, 58),
     'עסק סביבתי': Color.fromARGB(255, 121, 131, 37),
     'מוקד קהילתי': Color.fromARGB(255, 196, 67, 110),
+    'אתר בסיכון': Color.fromARGB(255, 54, 87, 104),
   };
 
   Future<void> fetchLocations() async {
@@ -36,6 +37,7 @@ class LocationsProvider extends ChangeNotifier {
                   _locations.add(
                     Location(
                       id: document.id,
+                      name: document['name'],
                       latLng: LatLng(document['latlng']['latitude'],
                           document['latlng']['longitude']),
                       address: document['address'],
@@ -49,10 +51,11 @@ class LocationsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> addLocation(
-      LatLng latLng, String address, String type, String description) async {
+  Future<String> addLocation(String name, LatLng latLng, String address,
+      String type, String description) async {
     try {
       final doc = await FirebaseFirestore.instance.collection('locations').add({
+        'name': name,
         'latlng': {'latitude': latLng.latitude, 'longitude': latLng.longitude},
         'address': address,
         'type': type,
@@ -61,6 +64,7 @@ class LocationsProvider extends ChangeNotifier {
       _locations.add(
         Location(
           id: doc.id,
+          name: name,
           latLng: latLng,
           address: address,
           type: type,
@@ -88,4 +92,6 @@ class LocationsProvider extends ChangeNotifier {
   }
 
   List<Location> get locations => [..._locations];
+
+  Map<String, Color> get types => {..._typesToColors};
 }

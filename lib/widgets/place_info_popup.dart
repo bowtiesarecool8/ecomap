@@ -27,21 +27,25 @@ class PlaceInfoPopup extends StatelessWidget {
             .findLocationById(placeId);
     return SizedBox(
       child: Card(
-        child: ListTile(
-          leading: IconButton(
-            icon:
-                const Icon(Icons.open_in_new, textDirection: TextDirection.rtl),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: ((context) => PlaceInfoScreen(placeId: placeId)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.open_in_new,
+                  textDirection: TextDirection.rtl),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: ((context) => PlaceInfoScreen(placeId: placeId)),
+                ),
               ),
             ),
-          ),
-          title: Text(location.address),
-          trailing: IconButton(
-            onPressed: () => infoController.hideAllPopups(),
-            icon: const Icon(Icons.close),
-          ),
+            Text(location.name),
+            IconButton(
+              onPressed: () => infoController.hideAllPopups(),
+              icon: const Icon(Icons.close),
+            ),
+          ],
         ),
       ),
     );

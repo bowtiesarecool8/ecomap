@@ -20,7 +20,7 @@ class PlaceInfoScreen extends StatelessWidget {
             .findLocationById(placeId);
     return Scaffold(
       appBar: AppBar(
-        title: Text(location.address),
+        title: Text(location.name),
       ),
     );
   }
