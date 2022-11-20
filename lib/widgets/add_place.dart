@@ -1,10 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:latlong2/latlong.dart';
+
+import 'package:image_picker/image_picker.dart';
 
 import '../providers/locations_provider.dart';
 
@@ -23,6 +28,8 @@ class _AddPlaceState extends State<AddPlace> {
   String address = '';
   String type = 'מרכז מיחזור';
   String description = '';
+  Image? im;
+  String imageBytes = '';
   static const listOfTypes = [
     'מרכז מיחזור',
     'ערך מורשת וטבע',
@@ -45,9 +52,10 @@ class _AddPlaceState extends State<AddPlace> {
     if (isValidInput) {
       _formKey.currentState!.save();
       setState(() async {
-        final response =
-            await Provider.of<LocationsProvider>(context, listen: false)
-                .addLocation(name, widget.latLng, address, type, description);
+        final response = await Provider.of<LocationsProvider>(context,
+                listen: false)
+            .addLocation(
+                name, widget.latLng, address, type, description, imageBytes);
         if (response == 'done') {
           Navigator.of(context).pop();
         } else {
@@ -64,16 +72,75 @@ class _AddPlaceState extends State<AddPlace> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: AlertDialog(
-        title: const Center(
-          child: Text('הוסף מיקום'),
-        ),
-        actions: [
-          Form(
-            key: _formKey,
+    return AlertDialog(
+      title: const Center(
+        child: Text('הוסף מיקום'),
+      ),
+      scrollable: true,
+      actions: [
+        Form(
+          key: _formKey,
+          child: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 4,
+                  width: double.maxFinite,
+                  child: imageBytes == ''
+                      ? Container(
+                          color: Colors.grey,
+                          child: IconButton(
+                            icon: const Icon(Icons.image_search),
+                            onPressed: () async {
+                              final picker = ImagePicker();
+                              final pickedImage = await picker.pickImage(
+                                  source: ImageSource.gallery);
+                              if (pickedImage == null) {
+                                imageBytes = '';
+                              } else {
+                                final bytes =
+                                    await File(pickedImage.path).readAsBytes();
+                                setState(() {
+                                  im = Image.file(File(pickedImage.path));
+                                  imageBytes = base64.encode(bytes);
+                                });
+                              }
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height / 4 -
+                                            50,
+                                    child: Image(image: im!.image)),
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(
+                                        width: 2.5, color: Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      im = null;
+                                      imageBytes = '';
+                                    });
+                                  },
+                                  child: const Text(
+                                    'הסר תמונה',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                ),
                 TextFormField(
                   key: const ValueKey('name'),
                   textAlign: TextAlign.right,
@@ -220,8 +287,8 @@ class _AddPlaceState extends State<AddPlace> {
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

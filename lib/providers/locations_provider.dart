@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import 'package:latlong2/latlong.dart';
@@ -44,6 +47,7 @@ class LocationsProvider extends ChangeNotifier {
                       type: document['type'],
                       color: _typesToColors[document['type']]!,
                       description: document['description'],
+                      imagebytes: document['image bytes'],
                     ),
                   ),
                 }
@@ -52,7 +56,7 @@ class LocationsProvider extends ChangeNotifier {
   }
 
   Future<String> addLocation(String name, LatLng latLng, String address,
-      String type, String description) async {
+      String type, String description, String imageBytes) async {
     try {
       final doc = await FirebaseFirestore.instance.collection('locations').add({
         'name': name,
@@ -60,6 +64,7 @@ class LocationsProvider extends ChangeNotifier {
         'address': address,
         'type': type,
         'description': description,
+        'image bytes': imageBytes,
       });
       _locations.add(
         Location(
@@ -70,6 +75,7 @@ class LocationsProvider extends ChangeNotifier {
           type: type,
           color: _typesToColors[type]!,
           description: description,
+          imagebytes: imageBytes,
         ),
       );
       notifyListeners();

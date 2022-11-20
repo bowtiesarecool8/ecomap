@@ -27,6 +27,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final user = FirebaseAuth.instance.currentUser!;
+  List<Location> _locations = [];
   List<Marker> _locationMarkers = [];
   LatLng pos = LatLng(31.92933, 34.79868);
   bool isFirstBuild = true;
@@ -53,7 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
   PopupController infoController = PopupController();
 
   List<Widget> generateFilters(LocationsProvider prov) {
-    List<Widget> filterOptions = [const Text('סנן סוגי אתרים:')];
+    List<Widget> filterOptions = [
+      const Text(
+        'סנן סוגי אתרים:',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
+      )
+    ];
     Map<String, Color> typesToColors = prov.types;
     for (String type in typesToColors.keys) {
       filterOptions.add(
@@ -82,44 +91,34 @@ class _HomeScreenState extends State<HomeScreen> {
               shape: const StadiumBorder(),
             ),
             onPressed: () {
-              setState(() {
-                for (var k in typeChecks.keys) {
-                  typeChecks[k] = true;
+              List<Location> filtered = [];
+              final places = prov.locations;
+              for (var pl in places) {
+                if (typeChecks[pl.type] == true) {
+                  filtered.add(pl);
                 }
-                _locationMarkers = generateMarkers(prov);
+              }
+              setState(() {
+                _locations = filtered;
                 _showFilters = false;
               });
             },
-            child: const Text('reset filters'),
+            child: const Text('סנן!'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: const StadiumBorder(),
             ),
             onPressed: () {
-              List<Marker> filtered = [];
-              final _places = prov.locations;
-              for (var pl in _places) {
-                if (typeChecks[pl.type] == true) {
-                  filtered.add(
-                    Marker(
-                      key: ValueKey(pl.id),
-                      point: pl.latLng,
-                      builder: (context) => Icon(
-                        Icons.location_pin,
-                        size: 35,
-                        color: pl.color,
-                      ),
-                    ),
-                  );
-                }
-              }
               setState(() {
-                _locationMarkers = filtered;
+                for (var k in typeChecks.keys) {
+                  typeChecks[k] = true;
+                }
+                _locations = prov.locations;
                 _showFilters = false;
               });
             },
-            child: const Text('apply filters'),
+            child: const Text('איפוס סינון'),
           ),
         ],
       ),
@@ -127,8 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return filterOptions;
   }
 
-  List<Marker> generateMarkers(LocationsProvider locationsProvider) {
-    List<Marker> returnList = locationsProvider.locations.map(
+  List<Marker> generateMarkers(List<Location> locations) {
+    List<Marker> returnList = locations.map(
       (element) {
         return Marker(
           key: ValueKey(element.id),
@@ -154,6 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
           .fetchLocations()
           .then((value) {
         setState(() {
+          _locations =
+              Provider.of<LocationsProvider>(context, listen: false).locations;
           isLoading = false;
           isFirstBuild = false;
         });
@@ -166,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<AuthProvider>(context);
     final locationsProvider = Provider.of<LocationsProvider>(context);
-    _locationMarkers = generateMarkers(locationsProvider);
+    _locationMarkers = generateMarkers(_locations);
     return Scaffold(
       appBar: AppBar(
         title: const Text('שלום!'),
