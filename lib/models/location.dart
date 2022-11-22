@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:latlong2/latlong.dart';
@@ -26,21 +25,12 @@ class Location {
     required this.imagebytes,
   });
 
-  Future<Image?> getImFromBase64(String base64String) async {
-    if (base64String == '') {
+  Image? getImFromBase64() {
+    if (imagebytes == '') {
       return null;
     } else {
-      Image? im;
-      final imageAsBytes = base64Decode(base64String);
-      try {
-        im = (await decodeImageFromList(imageAsBytes)) as Image?;
-        return im;
-      } catch (error) {
-        if (kDebugMode) {
-          print(error);
-        }
-        return null;
-      }
+      final imageAsBytes = base64Decode(imagebytes);
+      return Image.memory(imageAsBytes);
     }
   }
 }

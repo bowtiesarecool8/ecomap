@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -7,9 +9,29 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthProvider extends ChangeNotifier {
   final googleSignIn = GoogleSignIn();
   GoogleSignInAccount? _user;
+  String _uid = '';
+  String _email = '';
+  List<String> _savedPlaces = [];
+  bool _isAdmin = false;
 
   GoogleSignInAccount get user {
     return _user!;
+  }
+
+  String get uid {
+    return _uid;
+  }
+
+  String get email {
+    return _email;
+  }
+
+  List<String> get savedPlaces {
+    return [..._savedPlaces];
+  }
+
+  bool get isAdmin {
+    return _isAdmin;
   }
 
   Future<String?> login() async {
@@ -24,6 +46,25 @@ class AuthProvider extends ChangeNotifier {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+      _uid = FirebaseAuth.instance.currentUser!.uid;
+      _email = FirebaseAuth.instance.currentUser!.email!;
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      if (!userDoc.exists) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set({
+          'saved': [],
+          'admin': false,
+          'email': _email,
+        });
+      } else {
+        _savedPlaces = userDoc['saved'] as List<String>;
+        _isAdmin = userDoc['admin'];
+      }
       notifyListeners();
     } on FirebaseAuthException catch (error) {
       if (kDebugMode) {
@@ -47,6 +88,10 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout() async {
     await googleSignIn.disconnect();
     await FirebaseAuth.instance.signOut();
+    _uid = '';
+    _email = '';
+    _savedPlaces = [];
+    _isAdmin = false;
     notifyListeners();
   }
 }

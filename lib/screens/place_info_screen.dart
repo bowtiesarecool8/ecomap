@@ -18,10 +18,19 @@ class PlaceInfoScreen extends StatelessWidget {
     final Location location =
         Provider.of<LocationsProvider>(context, listen: false)
             .findLocationById(placeId);
+    final im = location.getImFromBase64();
     return Scaffold(
       appBar: AppBar(
         title: Text(location.name),
       ),
+      body: location.imagebytes == ""
+          ? const Text('no image')
+          : Center(
+              child: SizedBox(
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height / 2,
+                  child: im),
+            ),
     );
   }
 }

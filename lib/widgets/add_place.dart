@@ -51,22 +51,20 @@ class _AddPlaceState extends State<AddPlace> {
     FocusScope.of(context).unfocus();
     if (isValidInput) {
       _formKey.currentState!.save();
-      setState(() async {
-        final response = await Provider.of<LocationsProvider>(context,
-                listen: false)
-            .addLocation(
-                name, widget.latLng, address, type, description, imageBytes);
-        if (response == 'done') {
-          Navigator.of(context).pop();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response),
-            ),
-          );
-          Navigator.of(context).pop();
-        }
-      });
+      final response =
+          await Provider.of<LocationsProvider>(context, listen: false)
+              .addLocation(
+                  name, widget.latLng, address, type, description, imageBytes);
+      if (response == 'done') {
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response),
+          ),
+        );
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -77,70 +75,66 @@ class _AddPlaceState extends State<AddPlace> {
         child: Text('הוסף מיקום'),
       ),
       scrollable: true,
-      actions: [
-        Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 4,
-                  width: double.maxFinite,
-                  child: imageBytes == ''
-                      ? Container(
-                          color: Colors.grey,
-                          child: IconButton(
-                            icon: const Icon(Icons.image_search),
-                            onPressed: () async {
-                              final picker = ImagePicker();
-                              final pickedImage = await picker.pickImage(
-                                  source: ImageSource.gallery);
-                              if (pickedImage == null) {
-                                imageBytes = '';
-                              } else {
-                                final bytes =
-                                    await File(pickedImage.path).readAsBytes();
-                                setState(() {
-                                  im = Image.file(File(pickedImage.path));
-                                  imageBytes = base64.encode(bytes);
-                                });
-                              }
-                            },
+      content: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 4,
+            width: double.maxFinite,
+            child: imageBytes == ''
+                ? Container(
+                    color: Colors.grey,
+                    child: IconButton(
+                      icon: const Icon(Icons.image_search),
+                      onPressed: () async {
+                        final picker = ImagePicker();
+                        final pickedImage =
+                            await picker.pickImage(source: ImageSource.gallery);
+                        if (pickedImage == null) {
+                          imageBytes = '';
+                        } else {
+                          final bytes =
+                              await File(pickedImage.path).readAsBytes();
+                          setState(() {
+                            im = Image.file(File(pickedImage.path));
+                            imageBytes = base64.encode(bytes);
+                          });
+                        }
+                      },
+                    ),
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height / 4 - 50,
+                            child: Image(image: im!.image)),
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 2.5, color: Colors.blue),
                           ),
-                        )
-                      : Center(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.height / 4 -
-                                            50,
-                                    child: Image(image: im!.image)),
-                                OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(
-                                        width: 2.5, color: Colors.blue),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      im = null;
-                                      imageBytes = '';
-                                    });
-                                  },
-                                  child: const Text(
-                                    'הסר תמונה',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          onPressed: () {
+                            setState(() {
+                              im = null;
+                              imageBytes = '';
+                            });
+                          },
+                          child: const Text(
+                            'הסר תמונה',
+                            style: TextStyle(
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                ),
+                      ],
+                    ),
+                  ),
+          ),
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
                 TextFormField(
                   key: const ValueKey('name'),
                   textAlign: TextAlign.right,
@@ -287,8 +281,8 @@ class _AddPlaceState extends State<AddPlace> {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -224,6 +224,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                   setState(() {
                                     isEditing = false;
+                                    _locations = Provider.of<LocationsProvider>(
+                                            context,
+                                            listen: false)
+                                        .locations;
                                   });
                                 }
                               },
@@ -272,16 +276,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
             ),
-      floatingActionButton: CircleAvatar(
-        child: IconButton(
-          icon: Icon(isEditing ? Icons.close : Icons.edit),
-          onPressed: () {
-            setState(() {
-              isEditing = !isEditing;
-            });
-          },
-        ),
-      ),
+      floatingActionButton: !userProvider.isAdmin
+          ? null
+          : _showFilters
+              ? null
+              : CircleAvatar(
+                  child: IconButton(
+                    icon: Icon(isEditing ? Icons.close : Icons.edit),
+                    onPressed: () {
+                      setState(() {
+                        isEditing = !isEditing;
+                      });
+                    },
+                  ),
+                ),
     );
   }
 }
