@@ -17,6 +17,8 @@ import '../providers/locations_provider.dart';
 
 import '../widgets/add_place.dart';
 import '../widgets/place_info_popup.dart';
+import '../widgets/admin_app_drawer.dart';
+import '../widgets/normal_app_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -64,24 +66,37 @@ class _HomeScreenState extends State<HomeScreen> {
       )
     ];
     Map<String, Color> typesToColors = prov.types;
-    for (String type in typesToColors.keys) {
-      filterOptions.add(
-        CheckboxListTile(
-          controlAffinity: ListTileControlAffinity.leading,
-          checkColor: const Color(0xffeaeaea),
-          activeColor: typesToColors[type],
-          title: Text(
-            type,
+    filterOptions.add(
+      SizedBox(
+        height: (3 * MediaQuery.of(context).size.height) / 4,
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 3 / 1,
           ),
-          value: typeChecks[type],
-          onChanged: (value) {
-            setState(() {
-              typeChecks[type] = value!;
-            });
-          },
+          itemCount: typesToColors.keys.length,
+          itemBuilder: ((context, index) {
+            final typeKey = typesToColors.keys.toList()[index];
+            return GridTile(
+              child: CheckboxListTile(
+                controlAffinity: ListTileControlAffinity.leading,
+                checkColor: const Color(0xffeaeaea),
+                activeColor: typesToColors[typeKey],
+                title: Text(
+                  typeKey,
+                ),
+                value: typeChecks[typeKey],
+                onChanged: (value) {
+                  setState(() {
+                    typeChecks[typeKey] = value!;
+                  });
+                },
+              ),
+            );
+          }),
         ),
-      );
-    }
+      ),
+    );
     filterOptions.add(
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -149,14 +164,18 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         isLoading = true;
       });
-      await Provider.of<LocationsProvider>(context, listen: false)
-          .fetchLocations()
-          .then((value) {
-        setState(() {
-          _locations =
-              Provider.of<LocationsProvider>(context, listen: false).locations;
-          isLoading = false;
-          isFirstBuild = false;
+      await Provider.of<AuthProvider>(context, listen: false)
+          .fetchUserData()
+          .then((value) async {
+        await Provider.of<LocationsProvider>(context, listen: false)
+            .fetchLocations()
+            .then((value) {
+          setState(() {
+            isFirstBuild = false;
+            _locations = Provider.of<LocationsProvider>(context, listen: false)
+                .locations;
+            isLoading = false;
+          });
         });
       });
     }
@@ -196,6 +215,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      drawer: isLoading
+          ? null
+          : userProvider.appUserData!.isAdmin
+              ? const AdminAppDrawer()
+              : const NormalAppDrawer(),
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -276,20 +300,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
             ),
-      floatingActionButton: !userProvider.isAdmin
+      floatingActionButton: isLoading
           ? null
-          : _showFilters
+          : !userProvider.appUserData!.isAdmin
               ? null
-              : CircleAvatar(
-                  child: IconButton(
-                    icon: Icon(isEditing ? Icons.close : Icons.edit),
-                    onPressed: () {
-                      setState(() {
-                        isEditing = !isEditing;
-                      });
-                    },
-                  ),
-                ),
+              : _showFilters
+                  ? null
+                  : CircleAvatar(
+                      child: IconButton(
+                        icon: Icon(isEditing ? Icons.close : Icons.edit),
+                        onPressed: () {
+                          setState(() {
+                            isEditing = !isEditing;
+                          });
+                        },
+                      ),
+                    ),
     );
   }
 }

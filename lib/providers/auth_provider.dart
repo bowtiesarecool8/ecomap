@@ -6,32 +6,19 @@ import 'package:flutter/services.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../models/app_user.dart';
+
 class AuthProvider extends ChangeNotifier {
   final googleSignIn = GoogleSignIn();
   GoogleSignInAccount? _user;
-  String _uid = '';
-  String _email = '';
-  List<String> _savedPlaces = [];
-  bool _isAdmin = false;
+  AppUserData? _appUserData;
 
   GoogleSignInAccount get user {
     return _user!;
   }
 
-  String get uid {
-    return _uid;
-  }
-
-  String get email {
-    return _email;
-  }
-
-  List<String> get savedPlaces {
-    return [..._savedPlaces];
-  }
-
-  bool get isAdmin {
-    return _isAdmin;
+  AppUserData? get appUserData {
+    return _appUserData;
   }
 
   Future<String?> login() async {
@@ -46,25 +33,6 @@ class AuthProvider extends ChangeNotifier {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-      _uid = FirebaseAuth.instance.currentUser!.uid;
-      _email = FirebaseAuth.instance.currentUser!.email!;
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-      if (!userDoc.exists) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .set({
-          'saved': [],
-          'admin': false,
-          'email': _email,
-        });
-      } else {
-        _savedPlaces = userDoc['saved'] as List<String>;
-        _isAdmin = userDoc['admin'];
-      }
       notifyListeners();
     } on FirebaseAuthException catch (error) {
       if (kDebugMode) {
@@ -85,13 +53,76 @@ class AuthProvider extends ChangeNotifier {
     return null;
   }
 
+  Future<void> fetchUserData() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final email = FirebaseAuth.instance.currentUser!.email!;
+    try {
+      final userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      if (!userDoc.exists) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set({
+          'saved': [],
+          'admin': false,
+          'email': email,
+        });
+        _appUserData = AppUserData(
+          uid: uid,
+          email: email,
+          savedPlaces: [],
+          isAdmin: false,
+        );
+      } else {
+        final savedPlaces = userDoc['saved'];
+        final isAdmin = userDoc['admin'];
+        _appUserData = AppUserData(
+          uid: uid,
+          email: email,
+          savedPlaces: savedPlaces,
+          isAdmin: isAdmin,
+        );
+      }
+      notifyListeners();
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+    }
+  }
+
   Future<void> logout() async {
     await googleSignIn.disconnect();
     await FirebaseAuth.instance.signOut();
-    _uid = '';
-    _email = '';
-    _savedPlaces = [];
-    _isAdmin = false;
+    _appUserData = null;
     notifyListeners();
+  }
+
+  Future<String> updateSaved(String placeId) async {
+    try {
+      if (_appUserData!.isSaved(placeId)) {
+        _appUserData!.unsavePlace(placeId);
+      } else {
+        _appUserData!.savePlace(placeId);
+      }
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_appUserData!.uid)
+          .update({'saved': _appUserData!.savedPlaces});
+      notifyListeners();
+      return 'ok';
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+      if (_appUserData!.isSaved(placeId)) {
+        _appUserData!.unsavePlace(placeId);
+      } else {
+        _appUserData!.savePlace(placeId);
+      }
+      notifyListeners();
+      return 'אירעה שגיאה, נסו שנית מאוחר יותר';
+    }
   }
 }

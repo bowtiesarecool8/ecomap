@@ -29,28 +29,35 @@ class LocationsProvider extends ChangeNotifier {
   };
 
   Future<void> fetchLocations() async {
-    await FirebaseFirestore.instance
-        .collection('locations')
-        .get()
-        .then((data) => {
-              for (var document in data.docs)
-                {
-                  _locations.add(
-                    Location(
-                      id: document.id,
-                      name: document['name'],
-                      latLng: LatLng(document['latlng']['latitude'],
-                          document['latlng']['longitude']),
-                      address: document['address'],
-                      type: document['type'],
-                      color: _typesToColors[document['type']]!,
-                      description: document['description'],
-                      imagebytes: document['image bytes'],
+    try {
+      _locations = [];
+      await FirebaseFirestore.instance
+          .collection('locations')
+          .get()
+          .then((data) => {
+                for (var document in data.docs)
+                  {
+                    _locations.add(
+                      Location(
+                        id: document.id,
+                        name: document['name'],
+                        latLng: LatLng(document['latlng']['latitude'],
+                            document['latlng']['longitude']),
+                        address: document['address'],
+                        type: document['type'],
+                        color: _typesToColors[document['type']]!,
+                        description: document['description'],
+                        imagebytes: document['image bytes'],
+                      ),
                     ),
-                  ),
-                }
-            });
-    notifyListeners();
+                  }
+              });
+      notifyListeners();
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+    }
   }
 
   Future<String> addLocation(String name, LatLng latLng, String address,
@@ -82,7 +89,67 @@ class LocationsProvider extends ChangeNotifier {
       if (kDebugMode) {
         print(error.message);
       }
-      return error.message.toString();
+      _locations.removeWhere((element) => element.name == name);
+      notifyListeners();
+      return 'התרחשה שגיאה, נסו שנית מאוחר יותר';
+    }
+  }
+
+  Future<String> editLocation(
+      String id,
+      String name,
+      LatLng latLng,
+      String address,
+      String type,
+      String description,
+      String imageBytes) async {
+    final index = _locations.indexWhere((element) => element.id == id);
+    final old = _locations[index];
+    try {
+      _locations[index] = Location(
+        id: id,
+        name: name,
+        latLng: latLng,
+        address: address,
+        type: type,
+        color: _typesToColors[type]!,
+        description: description,
+        imagebytes: imageBytes,
+      );
+      await FirebaseFirestore.instance.collection('locations').doc(id).update({
+        'name': name,
+        'latlng': {'latitude': latLng.latitude, 'longitude': latLng.longitude},
+        'address': address,
+        'type': type,
+        'description': description,
+        'image bytes': imageBytes,
+      });
+      notifyListeners();
+      return 'done';
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+      _locations[index] = old;
+      notifyListeners();
+      return 'התרחשה שגיאה, נסו שנית מאוחר יותר';
+    }
+  }
+
+  Future<String> deleteLocation(String id) async {
+    final forDelete = _locations.firstWhere((element) => element.id == id);
+    try {
+      _locations.remove(forDelete);
+      await FirebaseFirestore.instance.collection('locations').doc(id).delete();
+      notifyListeners();
+      return 'done';
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+      _locations.add(forDelete);
+      notifyListeners();
+      return 'התרחשה שגיאה, נסו שנית מאוחר יותר';
     }
   }
 

@@ -22,20 +22,25 @@ class _AuthScreenState extends State<AuthScreen> {
         title: const Text('ברוכים הבאים!'),
       ),
       body: Center(
-        child: ElevatedButton.icon(
-          onPressed: () async {
-            final result = await userProvider.login();
-            if (result.toString() != 'null' && result.toString() != '') {
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(result.toString()),
-                ),
-              );
-            }
-          },
-          icon: const FaIcon(FontAwesomeIcons.google),
-          label: const Text('login with google'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () async {
+                final result = await userProvider.login();
+                if (result.toString() != 'null' && result.toString() != '') {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result.toString()),
+                    ),
+                  );
+                }
+              },
+              icon: const FaIcon(FontAwesomeIcons.google),
+              label: const Text('התחברו!'),
+            ),
+          ],
         ),
       ),
     );

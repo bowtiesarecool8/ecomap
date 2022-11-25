@@ -13,18 +13,22 @@ import 'package:image_picker/image_picker.dart';
 
 import '../providers/locations_provider.dart';
 
+import '../models/location.dart';
+
 // ignore: must_be_immutable
-class AddPlace extends StatefulWidget {
-  LatLng latLng;
-  AddPlace({required this.latLng, super.key});
+class EditPlace extends StatefulWidget {
+  Location oldLocation;
+  EditPlace({required this.oldLocation, super.key});
 
   @override
-  State<AddPlace> createState() => _AddPlaceState();
+  State<EditPlace> createState() => _EditPlaceState();
 }
 
-class _AddPlaceState extends State<AddPlace> {
+class _EditPlaceState extends State<EditPlace> {
   final _formKey = GlobalKey<FormState>();
+  bool isFirstBuild = true;
   String name = '';
+  late LatLng latLng;
   String address = '';
   String type = 'מרכז מיחזור';
   String description = '';
@@ -53,8 +57,8 @@ class _AddPlaceState extends State<AddPlace> {
       _formKey.currentState!.save();
       final response =
           await Provider.of<LocationsProvider>(context, listen: false)
-              .addLocation(
-                  name, widget.latLng, address, type, description, imageBytes);
+              .editLocation(widget.oldLocation.id, name, latLng, address, type,
+                  description, imageBytes);
       if (response == 'done') {
         Navigator.of(context).pop();
       } else {
@@ -70,9 +74,21 @@ class _AddPlaceState extends State<AddPlace> {
 
   @override
   Widget build(BuildContext context) {
+    if (isFirstBuild) {
+      setState(() {
+        name = widget.oldLocation.name;
+        latLng = widget.oldLocation.latLng;
+        address = widget.oldLocation.address;
+        type = widget.oldLocation.type;
+        description = widget.oldLocation.description;
+        im = widget.oldLocation.getImFromBase64();
+        imageBytes = widget.oldLocation.imagebytes;
+        isFirstBuild = false;
+      });
+    }
     return AlertDialog(
       title: const Center(
-        child: Text('הוסף מיקום'),
+        child: Text('ערוך מיקום'),
       ),
       scrollable: true,
       content: Column(
@@ -137,6 +153,7 @@ class _AddPlaceState extends State<AddPlace> {
               children: [
                 TextFormField(
                   key: const ValueKey('name'),
+                  initialValue: name,
                   textAlign: TextAlign.right,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
@@ -158,6 +175,7 @@ class _AddPlaceState extends State<AddPlace> {
                 ),
                 TextFormField(
                   key: const ValueKey('address'),
+                  initialValue: address,
                   textAlign: TextAlign.right,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
@@ -179,6 +197,7 @@ class _AddPlaceState extends State<AddPlace> {
                 ),
                 FormField(
                   key: const ValueKey('type'),
+                  initialValue: type,
                   builder: (FormFieldState fieldState) {
                     return Directionality(
                       textDirection: TextDirection.rtl,
@@ -234,6 +253,7 @@ class _AddPlaceState extends State<AddPlace> {
                 ),
                 TextFormField(
                   key: const ValueKey('description'),
+                  initialValue: description,
                   textAlign: TextAlign.right,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
@@ -261,7 +281,7 @@ class _AddPlaceState extends State<AddPlace> {
                       child: const Directionality(
                         textDirection: TextDirection.rtl,
                         child: Text(
-                          'הוסף מיקום!',
+                          'שמור את השינויים!',
                         ),
                       ),
                     ),
