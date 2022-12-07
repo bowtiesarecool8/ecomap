@@ -5,6 +5,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/place_info_screen.dart';
+import '../screens/delete_location_screen.dart';
 
 import '../widgets/edit_place.dart';
 
@@ -70,52 +71,12 @@ class _PlaceInfoPopupState extends State<PlaceInfoPopup> {
               ),
             if (isAdmin)
               IconButton(
-                onPressed: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (_) => Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: AlertDialog(
-                        title: const Text('האם למחוק את המקום מהמפה?'),
-                        content: isLoading
-                            ? const CircularProgressIndicator()
-                            : null,
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('לא'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              final String response =
-                                  await Provider.of<LocationsProvider>(context,
-                                          listen: false)
-                                      .deleteLocation(location.id);
-                              setState(() {
-                                isLoading = false;
-                              });
-                              if (response != 'done') {
-                                // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(response),
-                                  ),
-                                );
-                              }
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('כן'),
-                          ),
-                        ],
-                        actionsAlignment: MainAxisAlignment.spaceAround,
-                      ),
-                    ),
-                  );
-                },
+                onPressed: () => Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: ((context) => DeleteLocationScreen(
+                        placeId: widget.placeId, location: location)),
+                  ),
+                ),
                 icon: const Icon(Icons.delete),
               ),
             IconButton(

@@ -1,5 +1,6 @@
 import 'package:ecomap/models/app_user.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'package:provider/provider.dart';
 
@@ -21,27 +22,41 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
   List<Widget> generatePlaces(AppUserData data, List<Location> allPlaces) {
     List<Widget> toReturn = [];
     for (var id in data.savedPlaces) {
-      Location l = allPlaces.firstWhere((element) => element.id == id);
-      toReturn.add(
-        Card(
-          elevation: 5,
-          color: Colors.teal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(l.name),
-              IconButton(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: ((context) => PlaceInfoScreen(placeId: l.id)),
-                  ),
-                ),
-                icon: const Icon(Icons.open_in_new),
-              ),
-            ],
-          ),
-        ),
+      final tryToFind = allPlaces.firstWhere(
+        (element) => element.id == id,
+        orElse: () => Location(
+            id: '',
+            name: '',
+            latLng: LatLng(0, 0),
+            address: '',
+            type: '',
+            color: Colors.transparent,
+            description: '',
+            imagebytes: ''),
       );
+      if (tryToFind.id != '') {
+        Location l = allPlaces.firstWhere((element) => element.id == id);
+        toReturn.add(
+          Card(
+            elevation: 5,
+            color: Colors.teal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(l.name),
+                IconButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: ((context) => PlaceInfoScreen(placeId: l.id)),
+                    ),
+                  ),
+                  icon: const Icon(Icons.open_in_new),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
     }
     return toReturn;
   }
