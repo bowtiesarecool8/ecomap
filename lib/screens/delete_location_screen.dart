@@ -8,6 +8,8 @@ import '../providers/locations_provider.dart';
 
 import '../models/location.dart';
 
+import '../main.dart';
+
 class DeleteLocationScreen extends StatefulWidget {
   final String placeId;
   final Location location;
@@ -132,8 +134,7 @@ class _DeleteLocationScreenState extends State<DeleteLocationScreen> {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => const Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: HomeScreen()),
+                          textDirection: TextDirection.rtl, child: MyApp()),
                     ),
                   );
                 },

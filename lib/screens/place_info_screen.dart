@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../models/location.dart';
-
 import 'package:provider/provider.dart';
 
 import '../providers/locations_provider.dart';

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../screens/saved_places_screen.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../screens/saved_places_screen.dart';
+import '../screens/settings_screen.dart';
 
 class AdminAppDrawer extends StatelessWidget {
   const AdminAppDrawer({super.key});
@@ -36,9 +37,14 @@ class AdminAppDrawer extends StatelessWidget {
               ),
             ),
           ),
-          const ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('להגדיר- אופציות מנהל'),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('הגדרות מנהל'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: ((context) => const SettingsScreen()),
+              ),
+            ),
           ),
         ],
       ),

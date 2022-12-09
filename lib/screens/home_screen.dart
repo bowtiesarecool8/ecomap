@@ -208,8 +208,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             onPressed: () {
-              userProvider.logout();
-              locationsProvider.cleanDataOnExit();
+              setState(() {
+                userProvider.logout();
+                locationsProvider.cleanDataOnExit();
+              });
             },
             icon: const Icon(Icons.logout),
           ),
