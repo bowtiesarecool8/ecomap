@@ -22,13 +22,13 @@ class SettingsScreen extends StatelessWidget {
                 tabs: [
                   Tab(
                     icon: Icon(
-                      Icons.feedback,
+                      Icons.person,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   Tab(
                     icon: Icon(
-                      Icons.person,
+                      Icons.feedback,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
@@ -37,8 +37,8 @@ class SettingsScreen extends StatelessWidget {
               const Expanded(
                 child: TabBarView(
                   children: [
-                    feedback_tab.Feedback(),
                     EditAdmins(),
+                    feedback_tab.Feedback(),
                   ],
                 ),
               ),

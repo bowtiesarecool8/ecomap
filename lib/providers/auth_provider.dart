@@ -56,6 +56,8 @@ class AuthProvider extends ChangeNotifier {
   Future<void> fetchUserData() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final email = FirebaseAuth.instance.currentUser!.email!;
+    final username = FirebaseAuth.instance.currentUser!.displayName!;
+    final photoURL = FirebaseAuth.instance.currentUser!.photoURL!;
     try {
       final userDoc =
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
@@ -67,10 +69,14 @@ class AuthProvider extends ChangeNotifier {
           'saved': [],
           'admin': false,
           'email': email,
+          'username': username,
+          'profile': photoURL,
         });
         _appUserData = AppUserData(
           uid: uid,
           email: email,
+          username: username,
+          profileImageURL: photoURL,
           savedPlaces: [],
           isAdmin: false,
         );
@@ -80,6 +86,8 @@ class AuthProvider extends ChangeNotifier {
         _appUserData = AppUserData(
           uid: uid,
           email: email,
+          username: username,
+          profileImageURL: photoURL,
           savedPlaces: savedPlaces,
           isAdmin: isAdmin,
         );

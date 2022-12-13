@@ -1,12 +1,16 @@
 class AppUserData {
   String uid;
   String email;
+  String username;
+  String profileImageURL;
   List<dynamic> savedPlaces;
   bool isAdmin;
 
   AppUserData({
     required this.uid,
     required this.email,
+    required this.username,
+    required this.profileImageURL,
     required this.savedPlaces,
     required this.isAdmin,
   });

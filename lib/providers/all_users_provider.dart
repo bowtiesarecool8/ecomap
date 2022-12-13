@@ -9,12 +9,15 @@ class AllUsers extends ChangeNotifier {
 
   Future<void> fetchData() async {
     try {
+      _allUsers = [];
       await FirebaseFirestore.instance.collection('users').get().then((data) {
         for (var document in data.docs) {
           _allUsers.add(
             AppUserData(
               uid: document.id,
               email: document['email'],
+              username: document['username'],
+              profileImageURL: document['profile'],
               savedPlaces: document['saved'],
               isAdmin: document['admin'],
             ),
@@ -52,7 +55,7 @@ class AllUsers extends ChangeNotifier {
       }
       _allUsers.firstWhere((element) => element.uid == uid).isAdmin = false;
       notifyListeners();
-      return error.message.toString();
+      return 'אירעה שגיאה, נסו שנית מאוחר יותר';
     }
   }
 
@@ -71,7 +74,12 @@ class AllUsers extends ChangeNotifier {
       }
       _allUsers.firstWhere((element) => element.uid == uid).isAdmin = true;
       notifyListeners();
-      return error.message.toString();
+      return 'אירעה שגיאה, נסו שנית מאוחר יותר';
     }
+  }
+
+  void cleanDataOnExit() {
+    _allUsers = [];
+    notifyListeners();
   }
 }

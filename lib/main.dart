@@ -9,6 +9,8 @@ import './screens/home_screen.dart';
 
 import './providers/auth_provider.dart';
 import './providers/locations_provider.dart';
+import './providers/all_users_provider.dart';
+import './providers/feedback_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => LocationsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AllUsers(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FeedbackProvider(),
         ),
       ],
       child: MaterialApp(

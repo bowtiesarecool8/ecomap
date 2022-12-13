@@ -12,8 +12,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 import '../providers/auth_provider.dart';
-
 import '../providers/locations_provider.dart';
+import '../providers/all_users_provider.dart';
+import '../providers/feedback_provider.dart';
 
 import '../widgets/add_place.dart';
 import '../widgets/place_info_popup.dart';
@@ -166,15 +167,19 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       await Provider.of<AuthProvider>(context, listen: false)
           .fetchUserData()
-          .then((value) async {
-        await Provider.of<LocationsProvider>(context, listen: false)
-            .fetchLocations()
-            .then((value) {
-          setState(() {
-            isFirstBuild = false;
+          .then((_) async {
+        await Provider.of<AllUsers>(context, listen: false)
+            .fetchData()
+            .then((_) async {
+          await Provider.of<LocationsProvider>(context, listen: false)
+              .fetchLocations()
+              .then((_) {
             _locations = Provider.of<LocationsProvider>(context, listen: false)
                 .locations;
-            isLoading = false;
+            isFirstBuild = false;
+            setState(() {
+              isLoading = false;
+            });
           });
         });
       });
