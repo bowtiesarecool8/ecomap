@@ -6,6 +6,8 @@ import '../providers/locations_provider.dart';
 
 import '../providers/auth_provider.dart';
 
+import './add_feedback_screen.dart';
+
 class PlaceInfoScreen extends StatefulWidget {
   final String placeId;
   const PlaceInfoScreen({
@@ -97,6 +99,21 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
                 ),
             ],
           ),
+        ),
+        floatingActionButton: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                  width: 1, color: Theme.of(context).colorScheme.primary)),
+          onPressed: (() {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: ((context) => AddFeedbackScreen(
+                      placeId: widget.placeId,
+                    )),
+              ),
+            );
+          }),
+          child: const Text('יש בעיה? ספרו לנו!'),
         ),
       ),
     );

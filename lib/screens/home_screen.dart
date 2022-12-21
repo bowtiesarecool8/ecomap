@@ -173,12 +173,19 @@ class _HomeScreenState extends State<HomeScreen> {
             .then((_) async {
           await Provider.of<LocationsProvider>(context, listen: false)
               .fetchLocations()
-              .then((_) {
-            _locations = Provider.of<LocationsProvider>(context, listen: false)
-                .locations;
-            isFirstBuild = false;
-            setState(() {
-              isLoading = false;
+              .then((_) async {
+            await Provider.of<FeedbackProvider>(context, listen: false)
+                .fetchData(Provider.of<AuthProvider>(context, listen: false)
+                    .appUserData!
+                    .isAdmin)
+                .then((_) {
+              _locations =
+                  Provider.of<LocationsProvider>(context, listen: false)
+                      .locations;
+              isFirstBuild = false;
+              setState(() {
+                isLoading = false;
+              });
             });
           });
         });
@@ -216,6 +223,8 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 userProvider.logout();
                 locationsProvider.cleanDataOnExit();
+                Provider.of<FeedbackProvider>(context, listen: false)
+                    .cleanDataOnExit();
               });
             },
             icon: const Icon(Icons.logout),

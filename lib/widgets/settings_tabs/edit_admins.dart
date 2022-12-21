@@ -47,7 +47,7 @@ class _EditAdminsState extends State<EditAdmins> {
             leading: CircleAvatar(
               child: Image.network(admin.profileImageURL),
             ),
-            title: Text(admin.uid),
+            title: Text(admin.username),
             subtitle: Text(admin.email),
             trailing: IconButton(
               icon: const Icon(Icons.remove_circle_outline),
@@ -55,38 +55,42 @@ class _EditAdminsState extends State<EditAdmins> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return AlertDialog(
-                      title: const Text('האם להסיר מנהל למשתמש זה?'),
-                      actions: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('לא'),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary),
-                          onPressed: () async {
-                            final response = await Provider.of<AllUsers>(
-                                    context,
-                                    listen: false)
-                                .removeAdmin(admin.uid);
-                            if (response != 'ok') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(response),
-                                ),
-                              );
-                            }
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('כן'),
-                        ),
-                      ],
+                    return Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: AlertDialog(
+                        title: const Text('האם להסיר מנהל למשתמש זה?'),
+                        actionsAlignment: MainAxisAlignment.spaceAround,
+                        actions: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('לא'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary),
+                            onPressed: () async {
+                              final response = await Provider.of<AllUsers>(
+                                      context,
+                                      listen: false)
+                                  .removeAdmin(admin.uid);
+                              if (response != 'ok') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(response),
+                                  ),
+                                );
+                              }
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('כן'),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 );
@@ -153,42 +157,46 @@ class CustomSearchDelegate extends SearchDelegate {
     final result = _users.firstWhere(
       (element) => element.email == query,
     );
-    return AlertDialog(
-      title: Text('להגדיר את ${result.username} כמנהל?'),
-      content: ListTile(
-        leading: CircleAvatar(
-          child: Image.network(result.profileImageURL),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: AlertDialog(
+        title: Text('להגדיר את ${result.username} כמנהל?'),
+        content: ListTile(
+          leading: CircleAvatar(
+            child: Image.network(result.profileImageURL),
+          ),
+          title: Text(result.username),
+          subtitle: Text(result.email),
         ),
-        title: Text(result.username),
-        subtitle: Text(result.email),
+        actionsAlignment: MainAxisAlignment.spaceAround,
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('לא'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary),
+            onPressed: () async {
+              final response =
+                  await Provider.of<AllUsers>(context, listen: false)
+                      .addAdmin(result.uid);
+              if (response != 'ok') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(response),
+                  ),
+                );
+              }
+              close(context, null);
+            },
+            child: const Text('כן'),
+          ),
+        ],
       ),
-      actions: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('לא'),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary),
-          onPressed: () async {
-            final response = await Provider.of<AllUsers>(context, listen: false)
-                .addAdmin(result.uid);
-            if (response != 'ok') {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(response),
-                ),
-              );
-            }
-            Navigator.of(context).pop();
-            close(context, null);
-          },
-          child: const Text('כן'),
-        ),
-      ],
     );
   }
 
@@ -205,6 +213,7 @@ class CustomSearchDelegate extends SearchDelegate {
         itemBuilder: (context, index) {
           final s = suggestions[index];
           return ListTile(
+            trailing: const Icon(Icons.open_in_new),
             title: Text(s.email),
             onTap: () {
               query = s.email;

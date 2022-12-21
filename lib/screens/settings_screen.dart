@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/settings_tabs/edit_admins.dart';
-import '../widgets/settings_tabs/feedback.dart' as feedback_tab;
+import '../widgets/settings_tabs/feedback_view.dart' as feedback_tab;
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
