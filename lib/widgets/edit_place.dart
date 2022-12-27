@@ -129,6 +129,7 @@ class _EditPlaceState extends State<EditPlace> {
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(
                                 width: 2.5, color: Colors.blue),
+                            shape: const StadiumBorder(),
                           ),
                           onPressed: () {
                             setState(() {
@@ -277,6 +278,9 @@ class _EditPlaceState extends State<EditPlace> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                      ),
                       onPressed: () => trySubmit(),
                       child: const Directionality(
                         textDirection: TextDirection.rtl,
@@ -286,8 +290,10 @@ class _EditPlaceState extends State<EditPlace> {
                       ),
                     ),
                     ElevatedButton(
-                      style:
-                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: const StadiumBorder(),
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                       child: const Directionality(
                         textDirection: TextDirection.rtl,

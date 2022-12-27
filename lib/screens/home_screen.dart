@@ -1,5 +1,7 @@
 import 'package:ecomap/models/location.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 
@@ -10,6 +12,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+
+import 'package:geocoding/geocoding.dart' as geo_coding;
 
 import '../providers/auth_provider.dart';
 import '../providers/locations_provider.dart';
@@ -256,10 +260,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               zoom: 15,
                               onTap: (tapPosition, point) async {
                                 if (isEditing) {
+                                  List<geo_coding.Placemark> address = [];
+                                  try {
+                                    address = await geo_coding
+                                        .GeocodingPlatform.instance
+                                        .placemarkFromCoordinates(
+                                            point.latitude, point.longitude,
+                                            localeIdentifier: 'he_il');
+                                  } on PlatformException catch (error) {
+                                    if (kDebugMode) {
+                                      print(error.toString());
+                                    }
+                                  }
                                   await showDialog(
                                     context: context,
                                     builder: (_) => AddPlace(
                                       latLng: point,
+                                      autoAddress: address,
                                     ),
                                   );
                                   setState(() {

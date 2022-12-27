@@ -8,6 +8,8 @@ import '../../providers/all_users_provider.dart';
 
 import '../../providers/locations_provider.dart';
 
+import '../../models/location.dart';
+
 import '../../screens/show_feedback_screen.dart';
 
 class Feedback extends StatefulWidget {
@@ -18,13 +20,20 @@ class Feedback extends StatefulWidget {
 }
 
 class _FeedbackState extends State<Feedback> {
+  bool checkIfStillExists(List<Location> allLocations, String locationId) {
+    return allLocations.any((element) => element.id == locationId);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final allLocations =
+        Provider.of<LocationsProvider>(context, listen: false).locations;
     final feedbacks =
         Provider.of<FeedbackProvider>(context, listen: true).allFeedbacks;
+    feedbacks.removeWhere((element) {
+      return !checkIfStillExists(allLocations, element.locationID);
+    });
     final allUsers = Provider.of<AllUsers>(context, listen: false).allUsers;
-    final locations =
-        Provider.of<LocationsProvider>(context, listen: false).locations;
     return SizedBox(
       child: ListView.builder(
         itemCount: feedbacks.length,
@@ -38,6 +47,15 @@ class _FeedbackState extends State<Feedback> {
           return Directionality(
             textDirection: TextDirection.rtl,
             child: ListTile(
+              leading: f.isDone
+                  ? const Icon(
+                      Icons.done,
+                      size: 28,
+                    )
+                  : const Icon(
+                      Icons.crop_square,
+                      size: 28,
+                    ),
               title: Text(name),
               subtitle: Text(
                   '${f.uploadTime.day}/${f.uploadTime.month}/${f.uploadTime.year}'),

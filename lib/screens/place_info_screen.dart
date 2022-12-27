@@ -8,6 +8,8 @@ import '../providers/auth_provider.dart';
 
 import './add_feedback_screen.dart';
 
+import '../widgets/place_info_widget.dart';
+
 class PlaceInfoScreen extends StatefulWidget {
   final String placeId;
   const PlaceInfoScreen({
@@ -55,55 +57,17 @@ class _PlaceInfoScreenState extends State<PlaceInfoScreen> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              ListTile(
-                leading: Stack(
-                  alignment: Alignment.center,
-                  children: const [
-                    CircleAvatar(
-                      radius: 20,
-                    ),
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.place),
-                    ),
-                  ],
-                ),
-                title: Text(location.address),
-              ),
-              ListTile(
-                leading:
-                    CircleAvatar(radius: 18, backgroundColor: location.color),
-                title: Text(location.type),
-              ),
-              ListTile(
-                leading: const CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.info,
-                    size: 30,
-                  ),
-                ),
-                title: Text(location.description),
-              ),
-              if (location.imagebytes != "")
-                Center(
-                  child: SizedBox(
-                      width: MediaQuery.of(context).size.width / 2,
-                      height: MediaQuery.of(context).size.height / 2,
-                      child: im),
-                ),
-            ],
-          ),
+        body: PlaceInfoWidget(
+          location: location,
+          userProviderInstance: userProviderInstance,
+          im: im,
         ),
         floatingActionButton: OutlinedButton(
           style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                  width: 1, color: Theme.of(context).colorScheme.primary)),
+            side: BorderSide(
+                width: 1, color: Theme.of(context).colorScheme.primary),
+            shape: const StadiumBorder(),
+          ),
           onPressed: (() {
             Navigator.of(context).push(
               MaterialPageRoute(

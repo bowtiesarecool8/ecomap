@@ -41,7 +41,7 @@ class _DeleteLocationScreenState extends State<DeleteLocationScreen> {
                 onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: ((context) => const Directionality(
-                        textDirection: TextDirection.rtl, child: HomeScreen())),
+                        textDirection: TextDirection.rtl, child: MyApp())),
                   ),
                 ),
                 icon: const Icon(Icons.arrow_back_sharp),
@@ -103,7 +103,10 @@ class _DeleteLocationScreenState extends State<DeleteLocationScreen> {
                         child: im),
                   ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: const StadiumBorder(),
+                ),
                 onPressed: () async {
                   setState(() {
                     isLoading = true;

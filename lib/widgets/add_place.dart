@@ -11,12 +11,15 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:geocoding/geocoding.dart' as geo_coding;
+
 import '../providers/locations_provider.dart';
 
 // ignore: must_be_immutable
 class AddPlace extends StatefulWidget {
   LatLng latLng;
-  AddPlace({required this.latLng, super.key});
+  List<geo_coding.Placemark> autoAddress;
+  AddPlace({required this.latLng, required this.autoAddress, super.key});
 
   @override
   State<AddPlace> createState() => _AddPlaceState();
@@ -113,6 +116,7 @@ class _AddPlaceState extends State<AddPlace> {
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(
                                 width: 2.5, color: Colors.blue),
+                            shape: const StadiumBorder(),
                           ),
                           onPressed: () {
                             setState(() {
@@ -158,6 +162,9 @@ class _AddPlaceState extends State<AddPlace> {
                 ),
                 TextFormField(
                   key: const ValueKey('address'),
+                  initialValue: address = widget.autoAddress.isEmpty
+                      ? ''
+                      : '${widget.autoAddress[0].locality}, ${widget.autoAddress[0].street}',
                   textAlign: TextAlign.right,
                   textCapitalization: TextCapitalization.none,
                   autocorrect: false,
@@ -257,6 +264,9 @@ class _AddPlaceState extends State<AddPlace> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                      ),
                       onPressed: () => trySubmit(),
                       child: const Directionality(
                         textDirection: TextDirection.rtl,
@@ -266,8 +276,10 @@ class _AddPlaceState extends State<AddPlace> {
                       ),
                     ),
                     ElevatedButton(
-                      style:
-                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: const StadiumBorder(),
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                       child: const Directionality(
                         textDirection: TextDirection.rtl,

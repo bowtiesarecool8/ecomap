@@ -37,22 +37,26 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
       if (tryToFind.id != '') {
         Location l = allPlaces.firstWhere((element) => element.id == id);
         toReturn.add(
-          Card(
-            elevation: 5,
-            color: Colors.teal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(l.name),
-                IconButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: ((context) => PlaceInfoScreen(placeId: l.id)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              shape: const StadiumBorder(),
+              elevation: 5,
+              color: Colors.teal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(l.name),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: ((context) => PlaceInfoScreen(placeId: l.id)),
+                      ),
                     ),
+                    icon: const Icon(Icons.open_in_new),
                   ),
-                  icon: const Icon(Icons.open_in_new),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
