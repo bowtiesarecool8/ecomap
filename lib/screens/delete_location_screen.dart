@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import '../screens/home_screen.dart';
-
 import '../providers/locations_provider.dart';
+import '../providers/auth_provider.dart';
+import '../providers/feedback_provider.dart';
 
 import '../models/location.dart';
 
@@ -28,8 +28,11 @@ class _DeleteLocationScreenState extends State<DeleteLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final location = Provider.of<LocationsProvider>(context, listen: false)
-    //     .findLocationById(widget.placeId);
+    final locationsProvider =
+        Provider.of<LocationsProvider>(context, listen: false);
+    final userProvider = Provider.of<AuthProvider>(context, listen: false);
+    final feedbackProvider =
+        Provider.of<FeedbackProvider>(context, listen: false);
     final im = widget.location.getImFromBase64();
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -133,6 +136,10 @@ class _DeleteLocationScreenState extends State<DeleteLocationScreen> {
                       ),
                     );
                   }
+
+                  locationsProvider.cleanDataOnExit();
+                  feedbackProvider.cleanDataOnExit();
+
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
