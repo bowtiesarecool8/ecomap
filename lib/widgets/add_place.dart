@@ -66,6 +66,8 @@ class _AddPlaceState extends State<AddPlace> {
             content: Text(response),
           ),
         );
+        // await Provider.of<LocationsProvider>(context, listen: false)
+        //     .fetchLocations();
         Navigator.of(context, rootNavigator: true).pop();
       }
     }

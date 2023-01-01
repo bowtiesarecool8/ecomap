@@ -1,3 +1,4 @@
+import 'package:ecomap/models/feedback.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -24,15 +25,30 @@ class _FeedbackState extends State<Feedback> {
     return allLocations.any((element) => element.id == locationId);
   }
 
+  List<UserFeedback> generateFeedbacks(FeedbackProvider feedbackProvider,
+      List<UserFeedback> feedbacks, List<Location> allLocations) {
+    List<UserFeedback> toReturn = [];
+    //List<UserFeedback> toRemove = [];
+    for (var f in feedbacks) {
+      if (!checkIfStillExists(allLocations, f.locationID)) {
+        feedbackProvider.removeFeedbacksOnDeletedPlace(f);
+      } else {
+        toReturn.add(f);
+      }
+    }
+    return toReturn;
+  }
+
   @override
   Widget build(BuildContext context) {
     final allLocations =
         Provider.of<LocationsProvider>(context, listen: false).locations;
-    final feedbacks =
-        Provider.of<FeedbackProvider>(context, listen: true).allFeedbacks;
-    feedbacks.removeWhere((element) {
-      return !checkIfStillExists(allLocations, element.locationID);
-    });
+    var feedbacks =
+        Provider.of<FeedbackProvider>(context, listen: false).allFeedbacks;
+    feedbacks = generateFeedbacks(
+        Provider.of<FeedbackProvider>(context, listen: false),
+        feedbacks,
+        allLocations);
     final allUsers = Provider.of<AllUsers>(context, listen: false).allUsers;
     return SizedBox(
       child: ListView.builder(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecomap/widgets/settings_tabs/feedback_view.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/feedback.dart';
@@ -78,6 +79,20 @@ class FeedbackProvider extends ChangeNotifier {
       }
       feedback.isDone = !isDone;
       return 'אירעה שגיאה, נסו שנית מאוחר יותר';
+    }
+  }
+
+  Future<void> removeFeedbacksOnDeletedPlace(UserFeedback f) async {
+    _feedbacks.remove(f);
+    try {
+      await FirebaseFirestore.instance
+          .collection('feedbacks')
+          .doc(f.id)
+          .delete();
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
     }
   }
 

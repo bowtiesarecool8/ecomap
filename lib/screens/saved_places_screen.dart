@@ -19,8 +19,11 @@ class SavedPlacesScreen extends StatefulWidget {
 }
 
 class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
-  List<Widget> generatePlaces(AppUserData data, List<Location> allPlaces) {
+  List<Widget> generatePlaces(
+      AuthProvider userProvider, List<Location> allPlaces) {
     List<Widget> toReturn = [];
+    List<String> toRemove = [];
+    var data = userProvider.appUserData!;
     for (var id in data.savedPlaces) {
       final tryToFind = allPlaces.firstWhere(
         (element) => element.id == id,
@@ -60,15 +63,19 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
             ),
           ),
         );
+      } else {
+        toRemove.add(id);
       }
+    }
+    for (var id in toRemove) {
+      userProvider.removeNonExistingPlace(id);
     }
     return toReturn;
   }
 
   @override
   Widget build(BuildContext context) {
-    final userData =
-        Provider.of<AuthProvider>(context, listen: true).appUserData;
+    final userProvider = Provider.of<AuthProvider>(context, listen: false);
     final allPlaces =
         Provider.of<LocationsProvider>(context, listen: false).locations;
     return Directionality(
@@ -79,7 +86,7 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
         ),
         body: SingleChildScrollView(
           child: Column(
-            children: [...generatePlaces(userData!, allPlaces)],
+            children: [...generatePlaces(userProvider, allPlaces)],
           ),
         ),
       ),

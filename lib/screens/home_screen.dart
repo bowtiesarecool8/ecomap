@@ -279,6 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       autoAddress: address,
                                     ),
                                   );
+                                  await locationsProvider.fetchLocations();
                                   setState(() {
                                     isEditing = false;
                                     _locations = Provider.of<LocationsProvider>(

@@ -133,4 +133,18 @@ class AuthProvider extends ChangeNotifier {
       return 'אירעה שגיאה, נסו שנית מאוחר יותר';
     }
   }
+
+  Future<void> removeNonExistingPlace(String locationId) async {
+    _appUserData!.savedPlaces.remove(locationId);
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_appUserData!.uid)
+          .update({'saved': _appUserData!.savedPlaces});
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+    }
+  }
 }
