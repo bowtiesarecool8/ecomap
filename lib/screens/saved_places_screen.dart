@@ -43,22 +43,18 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              shape: const StadiumBorder(),
+              //shape: const StadiumBorder(),
               elevation: 5,
-              color: Colors.teal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(l.name),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: ((context) => PlaceInfoScreen(placeId: l.id)),
-                      ),
-                    ),
-                    icon: const Icon(Icons.open_in_new),
+              //color: Color.fromARGB(255, 74, 133, 127),
+              child: ListTile(
+                tileColor: const Color.fromARGB(255, 176, 179, 137),
+                title: Text(l.name),
+                trailing: const Icon(Icons.open_in_new),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: ((context) => PlaceInfoScreen(placeId: l.id)),
                   ),
-                ],
+                ),
               ),
             ),
           ),

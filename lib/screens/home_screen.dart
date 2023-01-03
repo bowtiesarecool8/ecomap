@@ -257,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: FlutterMap(
                             options: MapOptions(
                               center: LatLng(31.92933, 34.79868),
-                              zoom: 15,
+                              zoom: 15.5,
                               onTap: (tapPosition, point) async {
                                 if (isEditing) {
                                   List<geo_coding.Placemark> address = [];
