@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/locations_provider.dart';
-import '../providers/auth_provider.dart';
 import '../providers/feedback_provider.dart';
 
 import '../models/location.dart';
@@ -30,7 +29,6 @@ class _DeleteLocationScreenState extends State<DeleteLocationScreen> {
   Widget build(BuildContext context) {
     final locationsProvider =
         Provider.of<LocationsProvider>(context, listen: false);
-    final userProvider = Provider.of<AuthProvider>(context, listen: false);
     final feedbackProvider =
         Provider.of<FeedbackProvider>(context, listen: false);
     final im = widget.location.getImFromBase64();

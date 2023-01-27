@@ -272,6 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       print(error.toString());
                                     }
                                   }
+                                  // ignore: use_build_context_synchronously
                                   await showDialog(
                                     context: context,
                                     builder: (_) => AddPlace(

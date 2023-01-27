@@ -5,11 +5,11 @@ import '../models/location.dart';
 import '../providers/auth_provider.dart';
 
 class PlaceInfoWidget extends StatefulWidget {
-  Location location;
-  AuthProvider userProviderInstance;
-  Image? im;
+  final Location location;
+  final AuthProvider userProviderInstance;
+  final Image? im;
 
-  PlaceInfoWidget({
+  const PlaceInfoWidget({
     super.key,
     required this.location,
     required this.userProviderInstance,

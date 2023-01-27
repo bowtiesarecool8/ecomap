@@ -1,4 +1,3 @@
-import 'package:ecomap/models/app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -78,7 +77,7 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('המקומות ששמרתי'),
+          title: const Text('מועדפים'),
         ),
         body: SingleChildScrollView(
           child: Column(
