@@ -30,7 +30,7 @@ class AdminAppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.bookmark),
-            title: const Text('מקומות ששמרתי'),
+            title: const Text('מועדפים'),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: ((context) => const SavedPlacesScreen()),

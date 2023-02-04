@@ -12,6 +12,7 @@ class AllUsers extends ChangeNotifier {
       _allUsers = [];
       await FirebaseFirestore.instance.collection('users').get().then((data) {
         for (var document in data.docs) {
+          Timestamp time = document['lastLogin'];
           _allUsers.add(
             AppUserData(
               uid: document.id,
@@ -20,6 +21,7 @@ class AllUsers extends ChangeNotifier {
               profileImageURL: document['profile'],
               savedPlaces: document['saved'],
               isAdmin: document['admin'],
+              lastLogin: DateTime.parse(time.toDate().toString()),
             ),
           );
         }

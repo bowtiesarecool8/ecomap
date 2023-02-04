@@ -5,6 +5,7 @@ class AppUserData {
   String profileImageURL;
   List<dynamic> savedPlaces;
   bool isAdmin;
+  DateTime lastLogin;
 
   AppUserData({
     required this.uid,
@@ -13,6 +14,7 @@ class AppUserData {
     required this.profileImageURL,
     required this.savedPlaces,
     required this.isAdmin,
+    required this.lastLogin,
   });
 
   bool isSaved(String placeId) {

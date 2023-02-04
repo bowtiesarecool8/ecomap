@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/settings_tabs/edit_admins.dart';
 import '../widgets/settings_tabs/feedback_view.dart' as feedback_tab;
+import '../widgets/settings_tabs/users_log.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -11,7 +12,7 @@ class SettingsScreen extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('הגדרות מנהל'),
@@ -32,6 +33,12 @@ class SettingsScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
+                  Tab(
+                    icon: Icon(
+                      Icons.list,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
                 ],
               ),
               const Expanded(
@@ -39,6 +46,7 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     EditAdmins(),
                     feedback_tab.Feedback(),
+                    UsersLog(),
                   ],
                 ),
               ),

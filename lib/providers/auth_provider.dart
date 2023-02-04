@@ -71,6 +71,7 @@ class AuthProvider extends ChangeNotifier {
           'email': email,
           'username': username,
           'profile': photoURL,
+          'lastLogin': Timestamp.fromDate(DateTime.now()),
         });
         _appUserData = AppUserData(
           uid: uid,
@@ -79,10 +80,12 @@ class AuthProvider extends ChangeNotifier {
           profileImageURL: photoURL,
           savedPlaces: [],
           isAdmin: false,
+          lastLogin: DateTime.now(),
         );
       } else {
         final savedPlaces = userDoc['saved'];
         final isAdmin = userDoc['admin'];
+        Timestamp time = userDoc['lastLogin'];
         _appUserData = AppUserData(
           uid: uid,
           email: email,
@@ -90,6 +93,7 @@ class AuthProvider extends ChangeNotifier {
           profileImageURL: photoURL,
           savedPlaces: savedPlaces,
           isAdmin: isAdmin,
+          lastLogin: DateTime.parse(time.toDate().toString()),
         );
       }
       notifyListeners();
