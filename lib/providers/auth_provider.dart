@@ -58,6 +58,7 @@ class AuthProvider extends ChangeNotifier {
     final email = FirebaseAuth.instance.currentUser!.email!;
     final username = FirebaseAuth.instance.currentUser!.displayName!;
     final photoURL = FirebaseAuth.instance.currentUser!.photoURL!;
+    final lastLogin = DateTime.now();
     try {
       final userDoc =
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
@@ -71,7 +72,7 @@ class AuthProvider extends ChangeNotifier {
           'email': email,
           'username': username,
           'profile': photoURL,
-          'lastLogin': Timestamp.fromDate(DateTime.now()),
+          'lastLogin': Timestamp.fromDate(lastLogin),
         });
         _appUserData = AppUserData(
           uid: uid,
@@ -80,12 +81,15 @@ class AuthProvider extends ChangeNotifier {
           profileImageURL: photoURL,
           savedPlaces: [],
           isAdmin: false,
-          lastLogin: DateTime.now(),
+          lastLogin: lastLogin,
         );
       } else {
         final savedPlaces = userDoc['saved'];
         final isAdmin = userDoc['admin'];
-        Timestamp time = userDoc['lastLogin'];
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .update({'lastLogin': Timestamp.fromDate(lastLogin)});
         _appUserData = AppUserData(
           uid: uid,
           email: email,
@@ -93,7 +97,7 @@ class AuthProvider extends ChangeNotifier {
           profileImageURL: photoURL,
           savedPlaces: savedPlaces,
           isAdmin: isAdmin,
-          lastLogin: DateTime.parse(time.toDate().toString()),
+          lastLogin: lastLogin,
         );
       }
       notifyListeners();
