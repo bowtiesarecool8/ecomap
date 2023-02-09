@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../screens/saved_places_screen.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../screens/saved_places_screen.dart';
+import '../screens/info_screen.dart';
 
 class NormalAppDrawer extends StatelessWidget {
   const NormalAppDrawer({super.key});
@@ -30,6 +31,15 @@ class NormalAppDrawer extends StatelessWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: ((context) => const SavedPlacesScreen()),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('מידע עירוני'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: ((context) => const InfoScreen()),
               ),
             ),
           ),

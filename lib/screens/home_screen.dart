@@ -19,6 +19,7 @@ import '../providers/auth_provider.dart';
 import '../providers/locations_provider.dart';
 import '../providers/all_users_provider.dart';
 import '../providers/feedback_provider.dart';
+import '../providers/information_provider.dart';
 
 import '../widgets/add_place.dart';
 import '../widgets/place_info_popup.dart';
@@ -182,13 +183,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 .fetchData(Provider.of<AuthProvider>(context, listen: false)
                     .appUserData!
                     .isAdmin)
-                .then((_) {
-              _locations =
-                  Provider.of<LocationsProvider>(context, listen: false)
-                      .locations;
-              isFirstBuild = false;
-              setState(() {
-                isLoading = false;
+                .then((_) async {
+              await Provider.of<CityInformationProvider>(context, listen: false)
+                  .fetchData()
+                  .then((_) {
+                _locations =
+                    Provider.of<LocationsProvider>(context, listen: false)
+                        .locations;
+                isFirstBuild = false;
+                setState(() {
+                  isLoading = false;
+                });
               });
             });
           });

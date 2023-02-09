@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../screens/saved_places_screen.dart';
 import '../screens/settings_screen.dart';
+import '../screens/info_screen.dart';
 
 class AdminAppDrawer extends StatelessWidget {
   const AdminAppDrawer({super.key});
@@ -43,6 +44,15 @@ class AdminAppDrawer extends StatelessWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: ((context) => const SettingsScreen()),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('מידע עירוני'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: ((context) => const InfoScreen()),
               ),
             ),
           ),

@@ -6,9 +6,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/information.dart';
 
-class CityInformation extends ChangeNotifier {
+class CityInformationProvider extends ChangeNotifier {
   String _garbageCollection = '';
-  List<CityNotificationObject> _cityNotifications = [];
+  List<CityNotificationObject> _cityInfo = [];
+
+  String get garbageCollection {
+    return _garbageCollection;
+  }
+
+  List<CityNotificationObject> get cityInfo {
+    return [..._cityInfo];
+  }
 
   Future<void> fetchData() async {
     try {
@@ -30,7 +38,7 @@ class CityInformation extends ChangeNotifier {
             content: doc['content']));
       }
       _garbageCollection = garbage['content'];
-      _cityNotifications = cityNotes;
+      _cityInfo = cityNotes;
       notifyListeners();
     } on FirebaseException catch (error) {
       if (kDebugMode) {
