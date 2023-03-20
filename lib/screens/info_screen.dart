@@ -90,6 +90,20 @@ class _InfoScreenState extends State<InfoScreen> {
     );
   }
 
+  void updateDate(DateTime date, BuildContext ctx) async {
+    final newDate = await showDatePicker(
+      context: ctx,
+      initialDate: date,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (newDate != null) {
+      setState(() {
+        date = newDate;
+      });
+    }
+  }
+
   Future<void> addNotification(
       String content, DateTime date, BuildContext context) async {
     if (content != '') {
@@ -354,19 +368,20 @@ class _InfoScreenState extends State<InfoScreen> {
                               title: Text(
                                   '${date.day}/${date.month}/${date.year}'),
                               trailing: IconButton(
-                                onPressed: () async {
-                                  DateTime? newDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: date,
-                                    firstDate: DateTime.now(),
-                                    lastDate: DateTime(2100),
-                                  );
-                                  if (newDate != null) {
-                                    setState(() {
-                                      date = newDate;
-                                    });
-                                  }
-                                },
+                                onPressed: () => updateDate(date, context),
+                                // async {
+                                //   DateTime? newDate = await showDatePicker(
+                                //     context: context,
+                                //     initialDate: date,
+                                //     firstDate: DateTime.now(),
+                                //     lastDate: DateTime(2100),
+                                //   );
+                                //   if (newDate != null) {
+                                //     setState(() {
+                                //       date = newDate;
+                                //     });
+                                //   }
+                                // },
                                 icon: const Icon(Icons.calendar_today),
                               ),
                             ),
