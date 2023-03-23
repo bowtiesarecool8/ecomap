@@ -12,6 +12,7 @@ import './providers/locations_provider.dart';
 import './providers/all_users_provider.dart';
 import './providers/feedback_provider.dart';
 import './providers/information_provider.dart';
+import './providers/popups_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => AuthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PopupsProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => LocationsProvider(),

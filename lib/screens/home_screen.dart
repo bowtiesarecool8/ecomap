@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:ecomap/models/location.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +22,7 @@ import '../providers/locations_provider.dart';
 import '../providers/all_users_provider.dart';
 import '../providers/feedback_provider.dart';
 import '../providers/information_provider.dart';
+import '../providers/popups_provider.dart';
 
 import '../widgets/add_place.dart';
 import '../widgets/place_info_popup.dart';
@@ -186,21 +189,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 .then((_) async {
               await Provider.of<CityInformationProvider>(context, listen: false)
                   .fetchData()
-                  .then((_) {
-                _locations =
-                    Provider.of<LocationsProvider>(context, listen: false)
-                        .locations;
-                isFirstBuild = false;
-                setState(() {
-                  isLoading = false;
+                  .then((_) async {
+                await Provider.of<PopupsProvider>(context, listen: false)
+                    .fetchData()
+                    .then((_) {
+                  _locations =
+                      Provider.of<LocationsProvider>(context, listen: false)
+                          .locations;
+                  isFirstBuild = false;
+                  setState(() {
+                    isLoading = false;
+                  });
                 });
               });
             });
           });
         });
       });
+
+      if (!Provider.of<PopupsProvider>(context, listen: false).isViewed) {
+        Provider.of<PopupsProvider>(context, listen: false).userViewedPopups();
+        showDialog(
+          context: context,
+          builder: ((context) {
+            int index = 0;
+            final popups =
+                Provider.of<PopupsProvider>(context, listen: false).popups;
+            return AlertDialog(
+              title: Text(popups[index].title),
+            );
+          }),
+        );
+      }
+      super.didChangeDependencies();
     }
-    super.didChangeDependencies();
   }
 
   @override
