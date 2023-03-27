@@ -167,6 +167,53 @@ class _HomeScreenState extends State<HomeScreen> {
     return returnList;
   }
 
+  void showPopups(BuildContext ctx) {
+    showDialog(
+      context: ctx,
+      builder: ((ctx) {
+        int index = 0;
+        final popups = Provider.of<PopupsProvider>(ctx, listen: false).popups;
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            title: Text(popups[index].title),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(popups[index].content),
+                if (popups[index].imageBytes != "")
+                  popups[index].getImFromBase64()!,
+              ],
+            ),
+            actionsAlignment: MainAxisAlignment.spaceAround,
+            actions: [
+              IconButton(
+                onPressed: index == 0
+                    ? null
+                    : () {
+                        setState(() {
+                          index = index + 1;
+                        });
+                      },
+                icon: const Icon(Icons.arrow_back_ios_rounded),
+              ),
+              IconButton(
+                onPressed: index >= popups.length - 1
+                    ? null
+                    : () {
+                        setState(() {
+                          index = index + 1;
+                        });
+                      },
+                icon: const Icon(Icons.arrow_forward_ios_rounded),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
   @override
   Future<void> didChangeDependencies() async {
     if (isFirstBuild) {
@@ -209,17 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (!Provider.of<PopupsProvider>(context, listen: false).isViewed) {
         Provider.of<PopupsProvider>(context, listen: false).userViewedPopups();
-        showDialog(
-          context: context,
-          builder: ((context) {
-            int index = 0;
-            final popups =
-                Provider.of<PopupsProvider>(context, listen: false).popups;
-            return AlertDialog(
-              title: Text(popups[index].title),
-            );
-          }),
-        );
+        showPopups(context);
       }
       super.didChangeDependencies();
     }
@@ -234,6 +271,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('שלום!'),
         actions: [
+          IconButton(
+            onPressed: () => showPopups(context),
+            icon: const Icon(
+              Icons.info,
+            ),
+          ),
           IconButton(
             onPressed: () {
               if (_showFilters) {
