@@ -167,47 +167,63 @@ class _HomeScreenState extends State<HomeScreen> {
     return returnList;
   }
 
-  void showPopups(BuildContext ctx) {
+  void showPopups() {
     showDialog(
-      context: ctx,
-      builder: ((ctx) {
+      context: context,
+      builder: ((context) {
         int index = 0;
-        final popups = Provider.of<PopupsProvider>(ctx, listen: false).popups;
+        final popups =
+            Provider.of<PopupsProvider>(context, listen: false).popups;
         return Directionality(
           textDirection: TextDirection.rtl,
-          child: AlertDialog(
-            title: Text(popups[index].title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(popups[index].content),
-                if (popups[index].imageBytes != "")
-                  popups[index].getImFromBase64()!,
-              ],
-            ),
-            actionsAlignment: MainAxisAlignment.spaceAround,
-            actions: [
-              IconButton(
-                onPressed: index == 0
-                    ? null
-                    : () {
-                        setState(() {
-                          index = index + 1;
-                        });
-                      },
-                icon: const Icon(Icons.arrow_back_ios_rounded),
-              ),
-              IconButton(
-                onPressed: index >= popups.length - 1
-                    ? null
-                    : () {
-                        setState(() {
-                          index = index + 1;
-                        });
-                      },
-                icon: const Icon(Icons.arrow_forward_ios_rounded),
-              ),
-            ],
+          child: StatefulBuilder(
+            builder: ((context, setState) {
+              return AlertDialog(
+                title: Center(
+                  child: Text(
+                    popups[index].title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      popups[index].content,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    if (popups[index].imageBytes != "")
+                      popups[index].getImFromBase64()!,
+                  ],
+                ),
+                actionsAlignment: MainAxisAlignment.spaceAround,
+                actions: [
+                  IconButton(
+                    onPressed: index == 0
+                        ? null
+                        : () {
+                            setState(() {
+                              index = index - 1;
+                            });
+                          },
+                    icon: const Icon(Icons.arrow_back_ios_rounded),
+                  ),
+                  IconButton(
+                    onPressed: index >= popups.length - 1
+                        ? null
+                        : () {
+                            setState(() {
+                              index = index + 1;
+                            });
+                          },
+                    icon: const Icon(Icons.arrow_forward_ios_rounded),
+                  ),
+                ],
+              );
+            }),
           ),
         );
       }),
@@ -256,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (!Provider.of<PopupsProvider>(context, listen: false).isViewed) {
         Provider.of<PopupsProvider>(context, listen: false).userViewedPopups();
-        showPopups(context);
+        showPopups();
       }
       super.didChangeDependencies();
     }
@@ -272,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('שלום!'),
         actions: [
           IconButton(
-            onPressed: () => showPopups(context),
+            onPressed: () => showPopups(),
             icon: const Icon(
               Icons.info,
             ),

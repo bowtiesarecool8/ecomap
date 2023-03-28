@@ -359,68 +359,70 @@ class _InfoScreenState extends State<InfoScreen> {
                 context: context,
                 builder: ((context) => Directionality(
                       textDirection: TextDirection.rtl,
-                      child: AlertDialog(
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: const Text('תאריך:'),
-                              title: Text(
-                                  '${date.day}/${date.month}/${date.year}'),
-                              trailing: IconButton(
-                                onPressed: () => updateDate(date, context),
-                                // async {
-                                //   DateTime? newDate = await showDatePicker(
-                                //     context: context,
-                                //     initialDate: date,
-                                //     firstDate: DateTime.now(),
-                                //     lastDate: DateTime(2100),
-                                //   );
-                                //   if (newDate != null) {
-                                //     setState(() {
-                                //       date = newDate;
-                                //     });
-                                //   }
-                                // },
-                                icon: const Icon(Icons.calendar_today),
+                      child: StatefulBuilder(builder: ((context, setState) {
+                        return AlertDialog(
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                leading: const Text('תאריך:'),
+                                title: Text(
+                                    '${date.day}/${date.month}/${date.year}'),
+                                trailing: IconButton(
+                                  onPressed: () //=> updateDate(date, context),
+                                      async {
+                                    DateTime? newDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: date,
+                                      firstDate: DateTime.now(),
+                                      lastDate: DateTime(2100),
+                                    );
+                                    if (newDate != null) {
+                                      setState(() {
+                                        date = newDate;
+                                      });
+                                    }
+                                  },
+                                  icon: const Icon(Icons.calendar_today),
+                                ),
+                              ),
+                              TextFormField(
+                                textDirection: TextDirection.rtl,
+                                decoration: const InputDecoration(
+                                    labelText: 'תוכן ההודעה...'),
+                                onChanged: (value) => input = value,
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.error,
+                                shape: const StadiumBorder(),
+                              ),
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text(
+                                'ביטול',
                               ),
                             ),
-                            TextFormField(
-                              textDirection: TextDirection.rtl,
-                              decoration: const InputDecoration(
-                                  labelText: 'תוכן ההודעה...'),
-                              onChanged: (value) => input = value,
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                shape: const StadiumBorder(),
+                              ),
+                              onPressed: () {
+                                addNotification(input, date, context);
+                              },
+                              child: const Text(
+                                'הוסף',
+                              ),
                             ),
                           ],
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.error,
-                              shape: const StadiumBorder(),
-                            ),
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text(
-                              'ביטול',
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              shape: const StadiumBorder(),
-                            ),
-                            onPressed: () {
-                              addNotification(input, date, context);
-                            },
-                            child: const Text(
-                              'הוסף',
-                            ),
-                          ),
-                        ],
-                        actionsAlignment: MainAxisAlignment.spaceAround,
-                      ),
+                          actionsAlignment: MainAxisAlignment.spaceAround,
+                        );
+                      })),
                     )),
               );
             },

@@ -39,6 +39,71 @@ class PopupsProvider extends ChangeNotifier {
     }
   }
 
+  Future<String> addPopup(
+      String title, String content, String imageBytes) async {
+    try {
+      final newDoc = await FirebaseFirestore.instance.collection('popups').add({
+        'title': title,
+        'content': content,
+        'imageBytes': imageBytes,
+      });
+      _popups.add(
+        AppPopUp(
+          id: newDoc.id,
+          title: title,
+          content: content,
+          imageBytes: imageBytes,
+        ),
+      );
+      notifyListeners();
+      return 'ok';
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+      return 'התרחשה שגיאה, נסו שנית מאוחר יותר';
+    }
+  }
+
+  Future<String> editPopup(
+      String id, String title, String content, String imageBytes) async {
+    AppPopUp forEdit = _popups.firstWhere((element) => element.id == id);
+    try {
+      await FirebaseFirestore.instance.collection('popups').doc(id).update({
+        'title': title,
+        'content': content,
+        'imageBytes': imageBytes,
+      });
+      forEdit.title = title;
+      forEdit.content = content;
+      forEdit.imageBytes = imageBytes;
+      notifyListeners();
+      return 'ok';
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+      return 'התרחשה שגיאה, נסו שנית מאוחר יותר';
+    }
+  }
+
+  Future<String> deletePopup(String id) async {
+    int index = _popups.indexWhere((element) => element.id == id);
+    final forDelete = _popups.removeAt(index);
+    try {
+      await FirebaseFirestore.instance.collection('popups').doc(id).delete();
+      notifyListeners();
+      return 'ok';
+    } on FirebaseException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
+      _popups.add(forDelete);
+      notifyListeners();
+      return 'התרחשה שגיאה, נסו שנית מאוחר יותר';
+    }
+  }
+
   void userViewedPopups() {
     _isViewed = true;
     notifyListeners();
