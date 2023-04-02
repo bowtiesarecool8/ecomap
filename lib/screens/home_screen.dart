@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Marker> _locationMarkers = [];
   LatLng pos = LatLng(31.92933, 34.79868);
   bool isFirstBuild = true;
-  bool isLoading = false;
+  bool isLoading = true;
   bool isEditing = false;
   bool _showFilters = false;
 
@@ -151,6 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Marker> generateMarkers(List<Location> locations) {
+    locations = locations.toSet().toList();
     List<Marker> returnList = locations.map(
       (element) {
         return Marker(
@@ -188,18 +189,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      popups[index].content,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    if (popups[index].imageBytes != "")
-                      popups[index].getImFromBase64()!,
-                  ],
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        popups[index].content,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      if (popups[index].imageBytes != "")
+                        popups[index].getImFromBase64()!,
+                    ],
+                  ),
                 ),
                 actionsAlignment: MainAxisAlignment.spaceAround,
+                icon: Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                  ),
+                ),
                 actions: [
                   IconButton(
                     onPressed: index == 0
@@ -269,6 +279,12 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         });
       });
+
+      Provider.of<AllUsers>(context, listen: false).noDupes();
+      Provider.of<LocationsProvider>(context, listen: false).noDupes();
+      Provider.of<FeedbackProvider>(context, listen: false).noDupes();
+      Provider.of<CityInformationProvider>(context, listen: false).noDupes();
+      Provider.of<PopupsProvider>(context, listen: false).noDupes();
 
       if (!Provider.of<PopupsProvider>(context, listen: false).isViewed) {
         Provider.of<PopupsProvider>(context, listen: false).userViewedPopups();
@@ -408,6 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   builder: (context, markers) {
                                     return Center(
                                       child: FloatingActionButton(
+                                        heroTag: null,
                                         onPressed: () {},
                                         child: const Text(''),
                                       ),

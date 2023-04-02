@@ -62,6 +62,7 @@ class _AddFeedbackScreenState extends State<AddFeedbackScreen> {
         floatingActionButton: isLoading
             ? const CircularProgressIndicator()
             : ElevatedButton(
+                style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
                 onPressed: () async {
                   setState(() {
                     isLoading = true;

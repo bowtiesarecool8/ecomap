@@ -63,7 +63,9 @@ class _EditAdminsState extends State<EditAdmins> {
                         actions: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red),
+                              backgroundColor: Colors.red,
+                              shape: const StadiumBorder(),
+                            ),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -71,8 +73,10 @@ class _EditAdminsState extends State<EditAdmins> {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              shape: const StadiumBorder(),
+                            ),
                             onPressed: () async {
                               final response = await Provider.of<AllUsers>(
                                       context,
@@ -171,7 +175,10 @@ class CustomSearchDelegate extends SearchDelegate {
         actionsAlignment: MainAxisAlignment.spaceAround,
         actions: [
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: const StadiumBorder(),
+            ),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -179,7 +186,9 @@ class CustomSearchDelegate extends SearchDelegate {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: const StadiumBorder(),
+            ),
             onPressed: () async {
               final response =
                   await Provider.of<AllUsers>(context, listen: false)

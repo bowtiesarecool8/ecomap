@@ -141,4 +141,9 @@ class CityInformationProvider extends ChangeNotifier {
       return 'התרחשה שגיאה, נסו שנית מאוחר יותר';
     }
   }
+
+  void noDupes() {
+    _cityInfo = _cityInfo.toSet().toList();
+    notifyListeners();
+  }
 }

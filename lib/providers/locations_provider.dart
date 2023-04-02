@@ -162,6 +162,11 @@ class LocationsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void noDupes() {
+    _locations = _locations.toSet().toList();
+    notifyListeners();
+  }
+
   List<Location> get locations => [..._locations];
 
   Map<String, Color> get types => {..._typesToColors};
