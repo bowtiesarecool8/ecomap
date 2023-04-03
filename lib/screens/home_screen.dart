@@ -193,9 +193,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        popups[index].content,
-                        style: const TextStyle(fontSize: 16),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Text(
+                          popups[index].content,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
                       if (popups[index].imageBytes != "")
                         popups[index].getImFromBase64()!,
@@ -245,6 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (isFirstBuild) {
       setState(() {
         isLoading = true;
+        isFirstBuild = false;
       });
       await Provider.of<AuthProvider>(context, listen: false)
           .fetchUserData()
@@ -269,7 +273,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   _locations =
                       Provider.of<LocationsProvider>(context, listen: false)
                           .locations;
-                  isFirstBuild = false;
                   setState(() {
                     isLoading = false;
                   });
@@ -279,12 +282,6 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         });
       });
-
-      Provider.of<AllUsers>(context, listen: false).noDupes();
-      Provider.of<LocationsProvider>(context, listen: false).noDupes();
-      Provider.of<FeedbackProvider>(context, listen: false).noDupes();
-      Provider.of<CityInformationProvider>(context, listen: false).noDupes();
-      Provider.of<PopupsProvider>(context, listen: false).noDupes();
 
       if (!Provider.of<PopupsProvider>(context, listen: false).isViewed) {
         Provider.of<PopupsProvider>(context, listen: false).userViewedPopups();

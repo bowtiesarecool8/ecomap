@@ -100,11 +100,6 @@ class FeedbackProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void noDupes() {
-    _feedbacks = _feedbacks.toSet().toList();
-    notifyListeners();
-  }
-
   List<UserFeedback> get allFeedbacks {
     return [..._feedbacks];
   }

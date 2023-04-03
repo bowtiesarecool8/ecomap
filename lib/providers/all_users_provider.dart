@@ -80,11 +80,6 @@ class AllUsers extends ChangeNotifier {
     }
   }
 
-  void noDupes() {
-    _allUsers = _allUsers.toSet().toList();
-    notifyListeners();
-  }
-
   void cleanDataOnExit() {
     _allUsers = [];
     notifyListeners();

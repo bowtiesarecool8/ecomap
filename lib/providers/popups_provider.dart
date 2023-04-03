@@ -108,9 +108,4 @@ class PopupsProvider extends ChangeNotifier {
     _isViewed = true;
     notifyListeners();
   }
-
-  void noDupes() {
-    _popups = _popups.toSet().toList();
-    notifyListeners();
-  }
 }
