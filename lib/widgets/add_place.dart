@@ -93,7 +93,7 @@ class _AddPlaceState extends State<AddPlace> {
                       onPressed: () async {
                         final picker = ImagePicker();
                         final pickedImage =
-                            await picker.pickImage(source: ImageSource.gallery);
+                            await picker.pickImage(source: ImageSource.camera, maxWidth: 1024, maxHeight: 1024, imageQuality: 80);
                         if (pickedImage == null) {
                           imageBytes = '';
                         } else {
